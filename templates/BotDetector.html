@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Suivi du mouvement de la souris</title>
+</head>
+<body>
+    <!-- Bouton pour arrêter l'enregistrement et envoyer les données -->
+    <button id="stopButton">Vérifier</button>
+
+    <script>
+
+        // Fonction pour générer un identifiant de session unique
+        function generateSessionId() {
+            return '_' + Math.random().toString(36).substr(2, 9);
+        }
+        // Générer et stocker l'identifiant de session
+        const sessionId = generateSessionId();
+
+
+        // Tableaux pour stocker les mouvements de souris et les clics
+        let mouseMovements = [];
+        let clickCoordinates = [];
+        const MAX_TIME = 5000; // 5 secondes en millisecondes
+
+        
+
+        // Variable pour limiter la fréquence de collecte (throttling)
+        let lastRecordedTime = 0;
+
+        // Gestionnaire pour le mouvement de la souris
+        function mouseMoveHandler(event) {
+            let now = Date.now();
+            if (now - lastRecordedTime > 50) { // Enregistrer toutes les 50 ms
+                lastRecordedTime = now;
+                mouseMovements.push({
+                    x: event.clientX,
+                    y: event.clientY,
+                    time: now
+                });
+
+                // Supprimer les mouvements de souris plus anciens que 5 secondes
+                mouseMovements = mouseMovements.filter(movement => now - movement.time <= MAX_TIME);
+            }
+        }
+
+        // Gestionnaire pour les clics de souris
+        function clickHandler(event) {
+            let now = Date.now();
+            clickCoordinates.push({
+                x: event.clientX,
+                y: event.clientY,
+                time: now
+            });
+
+            // Supprimer les clics plus anciens que 5 secondes
+            clickCoordinates = clickCoordinates.filter(click => now - click.time <= MAX_TIME);
+        }
+
+        // Attacher les écouteurs d'événements
+        document.addEventListener('mousemove', mouseMoveHandler);
+        document.addEventListener('click', clickHandler);
+
+        // Fonction pour envoyer les données au serveur Flask
+        function sendData() {
+            // Préparation des données à envoyer
+            let data = {
+                session_id: sessionId, // Inclure l'identifiant de session pour différencier les essais
+                mouseMovements: mouseMovements,
+                clickCoordinates: clickCoordinates
+            };
+
+            // Envoi des données au serveur via une requête POST
+            fetch('/collect', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Données envoyées avec succès');
+                } else {
+                    alert('Erreur lors de l\'envoi des données');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+            });
+        }
+
+        // Écouteur pour le bouton "Arrêter et envoyer les données"
+        document.getElementById('stopButton').addEventListener('click', function() {
+            // Supprimer les écouteurs d'événements pour arrêter l'enregistrement
+            document.removeEventListener('mousemove', mouseMoveHandler);
+            document.removeEventListener('click', clickHandler);
+
+            // Envoyer les données au serveur
+            sendData();
+        });
+    </script>
+</body>
+</html>
