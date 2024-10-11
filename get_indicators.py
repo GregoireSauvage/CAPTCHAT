@@ -227,7 +227,5 @@ def get_indicators(filepath: str):
     # Créer un DataFrame avec les indicateurs
     dataset = pd.DataFrame(indicators_list)
 
-    # Sauvegarder le dataset pour le machine learning
-    dataset.to_csv('mouse_indicators_dataset.csv', index=False)
     
     return dataset

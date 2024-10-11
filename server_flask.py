@@ -1,9 +1,10 @@
 from flask import Flask, request, jsonify, render_template
 from get_indicators import  extract_indicators, get_indicators
 from organize_data import clear_dataset
+from model import random_forest
 import csv
 import os
-
+import pandas as pd
 
 def save_data(session_id, mouse_movements, click_coordinates, label):
     # Nom du fichier CSV
@@ -83,7 +84,22 @@ def extract_data_from_csv():
     # extrait les données de la souris pour chaque essai, extrait les indicateurs utiles et les mets dans un dataframe
     dataset = get_indicators(filepath=filepath) 
     
-    clear_dataset(dataset=dataset)
+    dataset = clear_dataset(dataset=dataset)
+    
+    # Sauvegarder le dataset pour le machine learning
+    dataset.to_csv('mouse_indicators_dataset.csv', index=False)
+    
+    return jsonify({'status': 'success'}), 200
+
+
+@app.route('/train', methods=['GET'])
+def extract_data_from_csv():
+    # Charger le dataset
+    filepath = "mouse_indicators_dataset.csv"
+    dataset = pd.read_csv(filepath)
+    
+    # Exécuter le modèle de machine learning pour la classification
+    random_forest(dataset)
     
     
     return jsonify({'status': 'success'}), 200
