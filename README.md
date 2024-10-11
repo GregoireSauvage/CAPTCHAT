@@ -36,8 +36,8 @@ CAPTCHAT 🐱 est une application web conçue pour collecter et analyser les mou
 1. Cloner le dépôt ou télécharger les fichiers du projet
 
 ```bash
-git clone https://github.com/votre-utilisateur/BotDetector.git
-cd BotDetector
+git clone https://github.com/GregoireSauvage/CAPTCHAT.git
+cd CAPTCHAT
 ```
 
 2. Créer un environnement virtuel (recommandé)
