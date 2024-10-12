@@ -56,39 +56,6 @@ def entropy_movements(mouse_movements):
 
 
 
-def speed_movements(mouse_movements):
-    ## calcule de la vitesse de la souris entre chaque mouvement en fonction de x,y et du temps
-    mouse_speed = []
-    for i in range(len(mouse_movements)-1):
-        x1 = mouse_movements[i]["x"]
-        y1 = mouse_movements[i]["y"]
-        t1 = mouse_movements[i]["time"]
-        x2 = mouse_movements[i+1]["x"]
-        y2 = mouse_movements[i+1]["y"]
-        t2 = mouse_movements[i+1]["time"]
-        speed = ((x2-x1)**2 + (y2-y1)**2) / (t2-t1)
-        mouse_speed.append(speed)
-    
-    #print("### Vitesse de la souris entre chaque mouvement: ###")
-    #for i in range(len(mouse_speed)):
-    #    print(f"{i+1}: {mouse_speed[i]}")
-    
-    
-    ## calcule de la vitesse moyenne, minimale et maximale entre le premier et le dernier mouvement
-    vitesse_moyenne = sum(mouse_speed) / len(mouse_speed)
-    vitesse_min = min(mouse_speed)
-    vitesse_max = max(mouse_speed)
-    ecart_vitesse = (vitesse_max - vitesse_min)/vitesse_max # valeur entre 0 et 1
-    print(f"### Vitesse moyenne: {vitesse_moyenne} ###")
-    print(f"### Vitesse minimale: {vitesse_min} ###")
-    print(f"### Vitesse maximale: {vitesse_max} ###")
-    print(f"### Ecart de vitesse: {ecart_vitesse} ###")
-    
-    return vitesse_moyenne, vitesse_min, vitesse_moyenne, ecart_vitesse, mouse_speed
-    
-    
-
-
 def extract_indicators(mouse_movements):
     """
     Extrait les indicateurs liés à l'accélération et à la trajectoire à partir des mouvements de souris.
