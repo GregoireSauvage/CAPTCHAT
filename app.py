@@ -50,7 +50,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('BotDetector.html')
+    return render_template('CAPTCHAT.html')
 
 @app.route('/collect', methods=['POST'])
 def collect_data():
@@ -62,16 +62,16 @@ def collect_data():
     mouse_movements = data.get('mouseMovements', [])
     click_coordinates = data.get('clickCoordinates', [])
     
-    # Définit le label (Humain ou Machine)
-    label = 'humain'
+    # Définit le label ('humain' ou 'robot')
+    label = 'robot'
     
     # Enregistrer les données
     save_data(session_id=session_id, mouse_movements=mouse_movements, click_coordinates=click_coordinates, label=label)
     
-    indicators = extract_indicators(mouse_movements=mouse_movements)
+    #indicators = extract_indicators(mouse_movements=mouse_movements)
     # Affichage des résultats
-    for key, value in indicators.items():
-        print(f"{key}: {value}")
+    #for key, value in indicators.items():
+    #    print(f"{key}: {value}")
         
         
     # Répondre au client
@@ -93,7 +93,7 @@ def extract_data_from_csv():
 
 
 @app.route('/train', methods=['GET'])
-def extract_data_from_csv():
+def train_dataset():
     # Charger le dataset
     filepath = "mouse_indicators_dataset.csv"
     dataset = pd.read_csv(filepath)
