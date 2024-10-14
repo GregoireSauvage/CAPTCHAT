@@ -4,7 +4,7 @@ from scipy.stats import entropy
 import matplotlib.pyplot as plt
 import pandas as pd
 
-def entropy_movements(mouse_movements):
+def entropy_movements(mouse_movements, show_figure=False):
 
     # Extraire les coordonnées x et y
     x = np.array([point['x'] for point in mouse_movements])
@@ -35,28 +35,29 @@ def entropy_movements(mouse_movements):
     angle_entropy = entropy(hist, base=np.e)
     #print(f"Entropie des changements d'angle : {angle_entropy}")
 
-    # Visualisation de la distribution des changements d'angle
-    #plt.figure(figsize=(8, 4))
-    #plt.hist(delta_angles, bins=30, density=True, alpha=0.7, color='blue')
-    #plt.title("Distribution des changements d'angle")
-    #plt.xlabel("Changement d'angle (radians)")
-    #plt.ylabel("Densité")
-    #plt.show()
+    if show_figure:
+        # Visualisation de la distribution des changements d'angle
+        #plt.figure(figsize=(8, 4))
+        #plt.hist(delta_angles, bins=30, density=True, alpha=0.7, color='blue')
+        #plt.title("Distribution des changements d'angle")
+        #plt.xlabel("Changement d'angle (radians)")
+        #plt.ylabel("Densité")
+        #plt.show()
 
-    # Visualisation de la trajectoire de la souris
-    #plt.figure(figsize=(8, 6))
-    #plt.plot(x, y, marker='o', linestyle='-', color='green')
-    #plt.title("Trajectoire de la souris")
-    #plt.xlabel("Position X")
-    #plt.ylabel("Position Y")
-    #plt.gca().invert_yaxis()
-    #plt.show()
-    
+        # Visualisation de la trajectoire de la souris
+        plt.figure(figsize=(8, 6))
+        plt.plot(x, y, marker='o', linestyle='-', color='green')
+        plt.title("Trajectoire de la souris")
+        plt.xlabel("Position X")
+        plt.ylabel("Position Y")
+        plt.gca().invert_yaxis()
+        plt.show()
+        
     return variance_delta_angles, angle_entropy
 
 
 
-def extract_indicators(mouse_movements):
+def extract_indicators(mouse_movements, show_figure=False):
     """
     Extrait les indicateurs liés à l'accélération et à la trajectoire à partir des mouvements de souris.
 
@@ -131,7 +132,7 @@ def extract_indicators(mouse_movements):
     speed_range_ratio = (speed_max - speed_min) / speed_max if speed_max != 0 else 0
 
     ## calcule de l'entropie dans les mouvements de la souris (ligne droite ou mouvements complexes)
-    variance_angles, entropie_angles = entropy_movements(mouse_movements=mouse_movements)
+    variance_angles, entropie_angles = entropy_movements(mouse_movements=mouse_movements, show_figure=show_figure)
     
     indicateurs = {
         # Indicateurs de vitesse

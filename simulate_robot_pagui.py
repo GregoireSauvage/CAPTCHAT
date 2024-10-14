@@ -96,7 +96,7 @@ def move_mouse_realistically(destination, duration=0.5):
 def main():
     taille_ecran = coin_bas_droit[0] - coin_haut_gauche[0], coin_bas_droit[1] - coin_haut_gauche[1]
     
-    n = 35
+    n = 1
     for i in range(n):
         
         # refresh la page

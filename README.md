@@ -14,6 +14,20 @@ CAPTCHAT 🐱 est une application web conçue pour collecter et analyser les mou
 - Entraînement d'un modèle de machine learning pour classer les mouvements en 'humain' ou 'machine'.
 - Interface web interactive pour démarrer et arrêter la collecte des données.
 
+## Résultats de l'entrainement #1 [Random Forest]
+### Dataset:
+- 35 mouvements ligne droite (robot)
+- 35 mouvements courbe de bézier (robot)
+- 70 mouvements naturels variés (humains)
+
+</br>
+
+### Matrice de confusion :
+</br>![alt text](plots_training/Matrice_confusion.png)
+
+### Courbe ROC :
+</br>![alt text](plots_training/ROC.png)
+
 
 ## Prérequis
 
@@ -113,4 +127,6 @@ Pour entraîner le modèle de machine learning:
 5. Interpréter les résultats
 - Les résultats de l'entraînement, y compris les métriques de performance et l'importance des caractéristiques, seront affichés dans la console.
 - Le modèle entraîné peut être sauvegardé pour une utilisation ultérieure.
+
+
 

@@ -5,8 +5,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.actions.interaction import POINTER_MOUSE
 from selenium.webdriver.common.actions.pointer_input import PointerInput
 from selenium.webdriver.common.actions.action_builder import ActionBuilder
-from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.common.action_chains import ActionChains
 import time
 import random
@@ -122,8 +120,6 @@ def main():
     # Créer un objet Service avec le chemin vers GeckoDriver
     service = Service(executable_path=geckodriver_path)
     
-    options = FirefoxOptions()
-    options.add_argument("--headless")
     # Initialiser le driver Firefox
     driver = webdriver.Firefox(service=service) 
 

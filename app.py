@@ -1,10 +1,20 @@
 from flask import Flask, request, jsonify, render_template
 from get_indicators import  extract_indicators, get_indicators
 from organize_data import clear_dataset
-from model import random_forest
+from model import random_forest, test_model
 import csv
 import os
 import pandas as pd
+
+def extract_data_from_csv():
+    filepath = "mouse_data.csv"
+    # extrait les données de la souris pour chaque essai, extrait les indicateurs utiles et les mets dans un dataframe
+    dataset = get_indicators(filepath=filepath) 
+    
+    dataset = clear_dataset(dataset=dataset)
+    
+    # Sauvegarder le dataset pour le machine learning
+    dataset.to_csv('mouse_indicators_dataset.csv', index=False)
 
 def save_data(session_id, mouse_movements, click_coordinates, label):
     # Nom du fichier CSV
@@ -50,7 +60,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('CAPTCHAT.html')
+    return render_template('predict_CAPTCHAT.html')
 
 @app.route('/collect', methods=['POST'])
 def collect_data():
@@ -78,22 +88,11 @@ def collect_data():
     return jsonify({'status': 'success'}), 200
 
 
-@app.route('/extract', methods=['GET'])
-def extract_data_from_csv():
-    filepath = "mouse_data.csv"
-    # extrait les données de la souris pour chaque essai, extrait les indicateurs utiles et les mets dans un dataframe
-    dataset = get_indicators(filepath=filepath) 
-    
-    dataset = clear_dataset(dataset=dataset)
-    
-    # Sauvegarder le dataset pour le machine learning
-    dataset.to_csv('mouse_indicators_dataset.csv', index=False)
-    
-    return jsonify({'status': 'success'}), 200
 
 
 @app.route('/train', methods=['GET'])
 def train_dataset():
+    extract_data_from_csv()
     # Charger le dataset
     filepath = "mouse_indicators_dataset.csv"
     dataset = pd.read_csv(filepath)
@@ -103,6 +102,32 @@ def train_dataset():
     
     
     return jsonify({'status': 'success'}), 200
+
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    data = request.get_json()
+    session_id = data.get('session_id', None)
+    if session_id is None:
+        # Si aucun session_id n'est fourni, on en génère un
+        import uuid
+        session_id = str(uuid.uuid4())
+
+    mouse_movements = data.get('mouseMovements', [])
+    click_coordinates = data.get('clickCoordinates', []) # Non utilisé pour le moment
+
+    # Extraire les indicateurs à partir des mouvements de souris
+    indicators = extract_indicators(mouse_movements=mouse_movements, show_figure=True)
+
+    # Vérifier que les indicateurs sont bien extraits
+    if indicators is None or len(indicators) == 0:
+        return jsonify({'status': 'error', 'message': 'Impossible d\'extraire les indicateurs'}), 400
+
+    # Charger le modèle et faire une prédiction
+    prediction = test_model(indicators)
+
+    # Renvoyer la prédiction au client (robot ou humain)
+    return jsonify({'status': 'success', 'prediction': prediction}), 200
 
 
 if __name__ == '__main__':
