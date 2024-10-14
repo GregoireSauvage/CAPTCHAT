@@ -26,11 +26,15 @@
         
 
         // Variable pour limiter la fréquence de collecte (throttling)
+        let firstRecordedTime = 0;
         let lastRecordedTime = 0;
 
         // Gestionnaire pour le mouvement de la souris
         function mouseMoveHandler(event) {
-            let now = Date.now();
+            if (firstRecordedTime === 0) {
+                firstRecordedTime = Date.now();
+            }
+            let now = Date.now() - firstRecordedTime;
             if (now - lastRecordedTime > 50) { // Enregistrer toutes les 50 ms
                 lastRecordedTime = now;
                 mouseMovements.push({
@@ -82,7 +86,7 @@
                 if (response.ok) {
                     //alert('Données envoyées avec succès');
                     // reload the page
-                    location.reload();
+                    //location.reload();
                 } else {
                     alert('Erreur lors de l\'envoi des données');
                 }

@@ -36,20 +36,20 @@ def entropy_movements(mouse_movements):
     #print(f"Entropie des changements d'angle : {angle_entropy}")
 
     # Visualisation de la distribution des changements d'angle
-    plt.figure(figsize=(8, 4))
-    plt.hist(delta_angles, bins=30, density=True, alpha=0.7, color='blue')
-    plt.title("Distribution des changements d'angle")
-    plt.xlabel("Changement d'angle (radians)")
-    plt.ylabel("Densité")
+    #plt.figure(figsize=(8, 4))
+    #plt.hist(delta_angles, bins=30, density=True, alpha=0.7, color='blue')
+    #plt.title("Distribution des changements d'angle")
+    #plt.xlabel("Changement d'angle (radians)")
+    #plt.ylabel("Densité")
     #plt.show()
 
     # Visualisation de la trajectoire de la souris
-    plt.figure(figsize=(8, 6))
-    plt.plot(x, y, marker='o', linestyle='-', color='green')
-    plt.title("Trajectoire de la souris")
-    plt.xlabel("Position X")
-    plt.ylabel("Position Y")
-    plt.gca().invert_yaxis()
+    #plt.figure(figsize=(8, 6))
+    #plt.plot(x, y, marker='o', linestyle='-', color='green')
+    #plt.title("Trajectoire de la souris")
+    #plt.xlabel("Position X")
+    #plt.ylabel("Position Y")
+    #plt.gca().invert_yaxis()
     #plt.show()
     
     return variance_delta_angles, angle_entropy

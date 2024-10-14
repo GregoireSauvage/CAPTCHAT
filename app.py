@@ -62,8 +62,8 @@ def collect_data():
     mouse_movements = data.get('mouseMovements', [])
     click_coordinates = data.get('clickCoordinates', [])
     
-    # Définit le label ('humain' ou 'robot')
-    label = 'robot'
+    # Définit le label ('human' ou 'robot')
+    label = 'human'
     
     # Enregistrer les données
     save_data(session_id=session_id, mouse_movements=mouse_movements, click_coordinates=click_coordinates, label=label)
