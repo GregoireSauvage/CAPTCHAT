@@ -8,6 +8,7 @@ from selenium.webdriver.common.actions.action_builder import ActionBuilder
 from selenium.webdriver.common.action_chains import ActionChains
 import time
 import random
+from simulate_robot_pagui import simulate_click_pyautogui
 
 def simulate_nice_click_selenium(driver, mouse, button_location, button_size, screen_width, screen_height):
     # Calculer le point central du bouton
@@ -36,8 +37,7 @@ def simulate_nice_click_selenium(driver, mouse, button_location, button_size, sc
     actions = ActionChains(driver)
 
     # Nombre d'étapes
-    steps = random.randint(15, 20)
-    steps = 5
+    steps = random.randint(5, 7)
     print(f"Nombre d'étapes : {steps}")
 
     # Calculer les positions intermédiaires
@@ -92,8 +92,7 @@ def simulate_click_selenium(driver, mouse, button_location, button_size, screen_
     actions.perform()
 
     # Nombre d'étapes pour le mouvement
-    steps = random.randint(15, 40) # (à ajuster si nécessaire)
-    steps = 6
+    steps = random.randint(5, 7) # (à ajuster si nécessaire)
     print(f"Nombre d'étapes : {steps}")
     # Calculer les positions intermédiaires
     x_positions = [start_x + (button_x - start_x) * (i + 1) / steps for i in range(steps)]
@@ -111,6 +110,20 @@ def simulate_click_selenium(driver, mouse, button_location, button_size, screen_
     return True
 
 
+def simulate_all_clicks(nb_clicks, driver, mouse, button_location, button_size, screen_width, screen_height):
+    nb_clicks = int(nb_clicks/4)
+    # Simuler n clicks sur le bouton
+    for i in range(nb_clicks):
+        print("Click: ", i+1)
+        simulate_click_selenium(driver, mouse, button_location, button_size, screen_width, screen_height)
+        time.sleep(2)  # Attendre un court instant entre les clics (à ajuster si nécessaire)
+    # Simuler i clicks sur le bouton
+    for i in range(nb_clicks):
+        print("Click: ", i+1)
+        simulate_nice_click_selenium(driver, mouse, button_location, button_size, screen_width, screen_height)
+        time.sleep(2)  # Attendre un court instant entre les clics (à ajuster si nécessaire)
+    
+    simulate_click_pyautogui(nb_clicks*2)
 
 
 def main():
@@ -144,13 +157,9 @@ def main():
     # Créer un dispositif de saisie pour la souris
     mouse = PointerInput(POINTER_MOUSE, "mouse")
 
-    # Simuler i clicks sur le bouton
-    nb_clicks = 5
-    for i in range(nb_clicks):
-        print("Click: ", i+1)
-        simulate_click_selenium(driver, mouse, button_location, button_size, screen_width, screen_height)
-        time.sleep(2)  # Attendre un court instant entre les clics (à ajuster si nécessaire)
-
+    # Simuler n clicks sur le bouton
+    simulate_all_clicks(20, driver, mouse, button_location, button_size, screen_width, screen_height)
+   
     # Attendre que les données soient envoyées
     time.sleep(1)
 

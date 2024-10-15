@@ -7,11 +7,13 @@
 <body>
     <!-- Bouton pour arrêter l'enregistrement et envoyer les données -->
     <button id="stopButton">Vérifier</button>
-    <h1>1. Recharger la page (Ctrl+R)
+</br>
+</br>
+    <h2>1. Recharger la page (Ctrl+R)
     <br>2. Cliquer sur le bouton "Vérifier"
     <br>3. Attendre la confirmation de l'envoi des données
     <br>4. Recommencer
-    </h1>
+    </h2>
     <script>
 
         // Fonction pour générer un identifiant de session unique
@@ -88,9 +90,7 @@
             })
             .then(response => {
                 if (response.ok) {
-                    //alert('Données envoyées avec succès');
-                    // reload the page
-                    //location.reload();
+                    alert('Données envoyées avec succès');
                 } else {
                     alert('Erreur lors de l\'envoi des données');
                 }
