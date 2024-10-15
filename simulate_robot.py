@@ -105,7 +105,7 @@ def simulate_click_selenium(driver, mouse, button_x, button_y, screen_width, scr
     return True
 
 
-def simulate_all_clicks(nb_clicks, driver, mouse, button_x, button_y, screen_width, screen_height):
+def simulate_all_clicks(nb_clicks, driver, mouse, button_x, button_y, screen_width, screen_height, train=True):
     nb_clicks = int(nb_clicks/4)
     # Simuler n clicks sur le bouton
     for i in range(nb_clicks):
@@ -121,7 +121,7 @@ def simulate_all_clicks(nb_clicks, driver, mouse, button_x, button_y, screen_wid
         driver.refresh()
     for i in range(nb_clicks*2):
         print("Click PyAutoGui: ", i+1)
-        simulate_click_pyautogui(button_x, button_y, screen_width, screen_height)
+        simulate_click_pyautogui(button_x, button_y, screen_width, screen_height, train)
         time.sleep(2)
         driver.refresh()
     
@@ -162,7 +162,7 @@ def main():
     mouse = PointerInput(POINTER_MOUSE, "mouse")
 
     # Simuler n clicks sur le bouton
-    simulate_all_clicks(12, driver, mouse, button_x, button_y, int(screen_width), int(screen_height))
+    simulate_all_clicks(12, driver, mouse, button_x, button_y, int(screen_width), int(screen_height), train=True)
    
     # Attendre que les données soient envoyées
     time.sleep(2)

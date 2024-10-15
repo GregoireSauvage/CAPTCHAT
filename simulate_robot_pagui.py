@@ -94,16 +94,14 @@ def move_mouse_realistically(destination, duration=0.5):
 
 
 
-def simulate_click_pyautogui(button_x, button_y, screen_width, screen_height):
-    button = (button_x, button_y)
-    
-    # refresh la page
-    pyautogui.moveTo(refresh[0], refresh[1])
-    click_randomly(duration=0.2)
-    
-    # Déplacer la souris vers son point de l'écran
+def simulate_click_pyautogui(button_x, button_y, screen_width, screen_height, train=False):
     depart = (500, 500)
+
+    button = (button_x, button_y)
+        # Déplacer la souris vers son point de l'écran
     depart = (random.uniform(0, screen_width), random.uniform(0, screen_height))
+    
+    
     print(f"Point de départ : {depart}")
     pyautogui.moveTo(depart[0], depart[1])
     print(f"Point d'arrivée : {button}")
@@ -121,26 +119,12 @@ def main():
     
     n = 1
     for i in range(n):
-        
         # refresh la page
         pyautogui.moveTo(refresh[0], refresh[1])
         click_randomly(duration=0.2)
-        
-        # Déplacer la souris vers son point de l'écran
-        depart = (taille_ecran[0]/2, taille_ecran[1]/2)
-        depart = random_point(depart, 250)
-        print(f"[{i+1}/{n}: Point de départ : {depart}")
-        pyautogui.moveTo(depart[0], depart[1])
-
-        # Déplacer la souris de manière réaliste vers le bouton
-        move_mouse_realistically(bouton, duration=0.2)
-        
-        # Cliquer sur le bouton
-        click_randomly(duration=0.2)
-        time.sleep(2)
+    
+        simulate_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1], train=False)
         
     
-    
-
 if __name__ == "__main__":
     main()

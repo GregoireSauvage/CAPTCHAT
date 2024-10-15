@@ -31,9 +31,9 @@ CAPTCHAT 🐱 est une application web conçue pour collecter et analyser les mou
 
 ## Prérequis
 
-- Python 3.x
-- Navigateur web moderne (Chrome, Firefox, etc.)
-
+- Python 3.10
+- Navigateur Firefox
+- GeckoDriver
 
 ## Bibliothèques Python requises
 
@@ -44,7 +44,9 @@ CAPTCHAT 🐱 est une application web conçue pour collecter et analyser les mou
 - seaborn
 - matplotlib
 - scipy
-
+- selenium
+- pyautogui
+- joblib
 
 # Installation
 1. Cloner le dépôt ou télécharger les fichiers du projet
