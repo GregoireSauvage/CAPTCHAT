@@ -10,10 +10,8 @@ import time
 import random
 from simulate_robot_pagui import simulate_click_pyautogui
 
-def simulate_nice_click_selenium(driver, mouse, button_location, button_size, screen_width, screen_height):
-    # Calculer le point central du bouton
-    button_x = button_location['x'] + button_size['width'] / 2
-    button_y = button_location['y'] + button_size['height'] / 2
+def simulate_nice_click_selenium(driver, mouse, button_x, button_y, screen_width, screen_height):
+
     print(f"Position du bouton: ({button_x}, {button_y})")
     # Point de départ du mouvement (par exemple, coin supérieur gauche)
     start_x = screen_width/2
@@ -68,11 +66,8 @@ def simulate_nice_click_selenium(driver, mouse, button_location, button_size, sc
 
 
 
-def simulate_click_selenium(driver, mouse, button_location, button_size, screen_width, screen_height):
+def simulate_click_selenium(driver, mouse, button_x, button_y, screen_width, screen_height):
     
-    # Calculer le point central du bouton
-    button_x = button_location['x'] + button_size['width'] / 2
-    button_y = button_location['y'] + button_size['height'] / 2
     
     # Point de départ du mouvement (par exemple, coin supérieur gauche)
     start_x = screen_width/2
@@ -110,20 +105,26 @@ def simulate_click_selenium(driver, mouse, button_location, button_size, screen_
     return True
 
 
-def simulate_all_clicks(nb_clicks, driver, mouse, button_location, button_size, screen_width, screen_height):
+def simulate_all_clicks(nb_clicks, driver, mouse, button_x, button_y, screen_width, screen_height):
     nb_clicks = int(nb_clicks/4)
     # Simuler n clicks sur le bouton
     for i in range(nb_clicks):
         print("Click: ", i+1)
-        simulate_click_selenium(driver, mouse, button_location, button_size, screen_width, screen_height)
+        simulate_click_selenium(driver, mouse, button_x, button_y, screen_width, screen_height)
         time.sleep(2)  # Attendre un court instant entre les clics (à ajuster si nécessaire)
+        driver.refresh()
     # Simuler i clicks sur le bouton
     for i in range(nb_clicks):
-        print("Click: ", i+1)
-        simulate_nice_click_selenium(driver, mouse, button_location, button_size, screen_width, screen_height)
+        print("Click nice: ", i+1)
+        simulate_nice_click_selenium(driver, mouse, button_x, button_y, screen_width, screen_height)
         time.sleep(2)  # Attendre un court instant entre les clics (à ajuster si nécessaire)
+        driver.refresh()
+    for i in range(nb_clicks*2):
+        print("Click PyAutoGui: ", i+1)
+        simulate_click_pyautogui(button_x, button_y, screen_width, screen_height)
+        time.sleep(2)
+        driver.refresh()
     
-    simulate_click_pyautogui(nb_clicks*2)
 
 
 def main():
@@ -134,8 +135,8 @@ def main():
     service = Service(executable_path=geckodriver_path)
     
     # Initialiser le driver Firefox
-    driver = webdriver.Firefox(service=service) 
-
+    driver = webdriver.Firefox(service=service)
+    driver.fullscreen_window()
     # Ouvrir la page web
     driver.get('http://localhost:5000/')  # Remplacez par l'URL appropriée si différent
 
@@ -149,6 +150,9 @@ def main():
     button_location = button.location
     button_size = button.size
    
+    # Calculer le point central du bouton
+    button_x = button_location['x'] + button_size['width'] / 2
+    button_y = button_location['y'] + button_size['height'] / 2
    
     # Taille de l'écran
     screen_width = driver.execute_script("return window.screen.width")
@@ -158,10 +162,10 @@ def main():
     mouse = PointerInput(POINTER_MOUSE, "mouse")
 
     # Simuler n clicks sur le bouton
-    simulate_all_clicks(20, driver, mouse, button_location, button_size, screen_width, screen_height)
+    simulate_all_clicks(12, driver, mouse, button_x, button_y, int(screen_width), int(screen_height))
    
     # Attendre que les données soient envoyées
-    time.sleep(1)
+    time.sleep(2)
 
     # Fermer le navigateur
     driver.quit()
