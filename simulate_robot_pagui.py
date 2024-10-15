@@ -106,7 +106,7 @@ def simulate_click_pyautogui(nb_clicks=1):
         depart = (500, 500)
         depart[0] = random.uniform(0, taille_ecran[0])
         depart[1] = random.uniform(0, taille_ecran[1])
-        print(f"[{i+1}/{n}: Point de départ : {depart}")
+        print(f"[{i+1}/{nb_clicks}: Point de départ : {depart}")
         pyautogui.moveTo(depart[0], depart[1])
 
         # Déplacer la souris de manière réaliste vers le bouton
