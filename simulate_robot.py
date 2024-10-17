@@ -8,7 +8,7 @@ from selenium.webdriver.common.actions.action_builder import ActionBuilder
 from selenium.webdriver.common.action_chains import ActionChains
 import time
 import random
-from simulate_robot_pagui import simulate_click_pyautogui
+from simulate_robot_pagui import simulate_click_pyautogui, simulate_random_click_pyautogui, simulate_linear_click_pyautogui
 
 def simulate_nice_click_selenium(driver, mouse, button_x, button_y, screen_width, screen_height):
 
@@ -113,17 +113,22 @@ def simulate_all_clicks(nb_clicks, driver, mouse, button_x, button_y, screen_wid
         simulate_click_selenium(driver, mouse, button_x, button_y, screen_width, screen_height)
         time.sleep(2)  # Attendre un court instant entre les clics (à ajuster si nécessaire)
         driver.refresh()
-    # Simuler i clicks sur le bouton
     for i in range(nb_clicks):
-        print("Click nice: ", i+1)
-        simulate_nice_click_selenium(driver, mouse, button_x, button_y, screen_width, screen_height)
-        time.sleep(2)  # Attendre un court instant entre les clics (à ajuster si nécessaire)
+        print("Click Linear PyAutoGui: ", i+1)
+        simulate_linear_click_pyautogui(button_x, button_y, screen_width, screen_height, train)
+        time.sleep(2)
         driver.refresh()
-    for i in range(nb_clicks*2):
+    for i in range(nb_clicks):
+        print("Click Random PyAutoGui: ", i+1)
+        simulate_random_click_pyautogui(button_x, button_y, screen_width, screen_height, train)
+        time.sleep(2)
+        driver.refresh()
+    for i in range(nb_clicks):
         print("Click PyAutoGui: ", i+1)
         simulate_click_pyautogui(button_x, button_y, screen_width, screen_height, train)
         time.sleep(2)
         driver.refresh()
+    
     
 
 
