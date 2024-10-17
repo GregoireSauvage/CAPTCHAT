@@ -117,7 +117,7 @@ def predict():
     click_coordinates = data.get('clickCoordinates', []) # Non utilisé pour le moment
 
     # Extraire les indicateurs à partir des mouvements de souris
-    indicators = extract_indicators(mouse_movements=mouse_movements, show_figure=False)
+    indicators = extract_indicators(mouse_movements=mouse_movements, show_figure=True)
 
     # Vérifier que les indicateurs sont bien extraits
     if indicators is None or len(indicators) == 0:
