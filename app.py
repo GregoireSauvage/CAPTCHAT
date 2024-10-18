@@ -7,7 +7,7 @@ import os
 import pandas as pd
 
 def extract_data_from_csv():
-    filepath = "mouse_data.csv"
+    filepath = "data.csv"
     # extrait les données de la souris pour chaque essai, extrait les indicateurs utiles et les mets dans un dataframe
     dataset = get_indicators(filepath=filepath) 
     
@@ -87,6 +87,13 @@ def collect_data():
     # Répondre au client
     return jsonify({'status': 'success'}), 200
 
+
+@app.route('/extract', methods=['GET'])
+def extract_data():
+    extract_data_from_csv()
+
+    
+    return jsonify({'status': 'success'}), 200
 
 
 
