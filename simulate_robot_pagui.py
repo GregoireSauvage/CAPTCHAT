@@ -130,6 +130,9 @@ def move_mouse_bezier(destination, duration=0.5):
     # Générer les points le long de la courbe de Bézier
     points = bezier_curve((start_x, start_y), control1, control2, (end_x, end_y), n_points)
 
+    # Ajouter des perturbations aléatoires pour simuler les changements brusques de direction
+    points = perturbation(points)
+    
     # Générer des intervalles de temps aléatoires
     intervals = generate_random_durations(duration, n_points)
 
@@ -174,7 +177,10 @@ def move_mouse_cubic_spline(destination, duration=0.5):
 
     # Générer les points le long de la courbe cubique spline
     points = cubic_spline_curve((start_x, start_y), (end_x, end_y), n_points)
-
+    
+    # Ajouter des perturbations aléatoires pour simuler les changements brusques de direction
+    points = perturbation(points)
+     
     # Générer des intervalles de temps aléatoires
     intervals = generate_random_durations(duration, n_points)
 
@@ -224,6 +230,9 @@ def move_mouse_randomly(destination, duration=0.5):
     # Générer les points le long de la courbe de Bézier
     points = random_curve(key_points, n_points)
 
+    # Ajouter des perturbations aléatoires pour simuler les changements brusques de direction
+    points = perturbation(points) 
+    
     # Générer des intervalles de temps aléatoires
     intervals = generate_random_durations(duration, n_points)
 
@@ -273,6 +282,9 @@ def move_mouse_linear(destination, duration=0.5):
     # Générer les points le long de la courbe de Bézier
     points = random_curve(key_points, n_points)
 
+    # Ajouter des perturbations aléatoires pour simuler les changements brusques de direction
+    points = perturbation(points)
+    
     # Générer des intervalles de temps aléatoires
     intervals = generate_random_durations(duration, n_points)
 
@@ -375,6 +387,22 @@ def simulate_linear_click_pyautogui(button_x, button_y, screen_width, screen_hei
     
     return
 
+
+def perturbation(points):
+    # **Ajouter des perturbations aléatoires pour simuler les changements brusques de direction**
+    total_points = len(points)
+    num_perturbations = random.randint(3, 7)  # Nombre de perturbations à ajouter
+    perturbation_indices = random.sample(range(1, total_points - 1), num_perturbations)
+
+    # Ajouter les perturbations aux points sélectionnés
+    for index in perturbation_indices:
+        x, y = points[index]
+        x += random.uniform(-20, 20)  # Déviation en x
+        y += random.uniform(-20, 20)  # Déviation en y
+        points[index] = (x, y)
+        
+    return points
+    
     
 def main():
     taille_ecran = coin_bas_droit[0] - coin_haut_gauche[0], coin_bas_droit[1] - coin_haut_gauche[1]
