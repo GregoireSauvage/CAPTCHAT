@@ -73,9 +73,7 @@ def cubic_spline_curve(start, destination, n_points=30):
                    (2 * start[1] - 5 * start[1] + 4 * destination[1] - destination[1]) * t2 +
                    (-start[1] + 3 * start[1] - 3 * destination[1] + destination[1]) * t3)
 
-        spline_points.append((x, y))
-    for i in range(len(spline_points)):
-        print(f"Point {i}: {spline_points[i]}")
+        spline_points.append((x, y))        
     return spline_points
 
 
@@ -92,7 +90,6 @@ def random_curve(key_points, n_points=30):
             x = (1-t) * p1[0] + t * p2[0]
             y = (1-t) * p1[1] + t * p2[1]
             x, y = random_point((x, y), 3)  # Ajouter une variation aléatoire
-            print(f"Point {i}: ({x}, {y})")
 
         points.append((x, y))
         
@@ -144,13 +141,11 @@ def move_mouse_bezier(destination, duration=0.5):
     
     # Déplacer la souris selon les points avec hésitations
     for index, (point, interval) in enumerate(zip(points, intervals)):
-        print(f"Point {index}: {point}")
         pyautogui.moveTo(point[0], point[1])
 
         # Vérifier si c'est un point d'hésitation
         if index in pause_indices:
             pause_duration = pause_durations[index]
-            print(f"Pause de {pause_duration:.3f} secondes à l'indice {index}")
             time.sleep(pause_duration)
 
         time.sleep(interval / 2)
@@ -192,13 +187,11 @@ def move_mouse_cubic_spline(destination, duration=0.5):
     
     # Déplacer la souris selon les points avec hésitations
     for index, (point, interval) in enumerate(zip(points, intervals)):
-        print(f"Point {index}: {point}")
         pyautogui.moveTo(point[0], point[1])
 
         # Vérifier si c'est un point d'hésitation
         if index in pause_indices:
             pause_duration = pause_durations[index]
-            print(f"Pause de {pause_duration:.3f} secondes à l'indice {index}")
             time.sleep(pause_duration)
 
         time.sleep(interval / 2)
@@ -225,7 +218,6 @@ def move_mouse_randomly(destination, duration=0.5):
         y = random.uniform(prev_y, end_y) #+ random.uniform(50, distance/5)
         x, y = random_point((x, y), 5)
         key_points.append((x, y))
-        print(f"Point clé {i}: ({x}, {y})")
     key_points.append((end_x, end_y))
     # Générer les points le long de la courbe de Bézier
     points = random_curve(key_points, n_points)
@@ -244,13 +236,11 @@ def move_mouse_randomly(destination, duration=0.5):
     
     # Déplacer la souris selon les points avec hésitations
     for index, (point, interval) in enumerate(zip(points, intervals)):
-        print(f"Point {index}: {point}")
         pyautogui.moveTo(point[0], point[1])
 
         # Vérifier si c'est un point d'hésitation
         if index in pause_indices:
             pause_duration = pause_durations[index]
-            print(f"Pause de {pause_duration:.3f} secondes à l'indice {index}")
             time.sleep(pause_duration)
 
         time.sleep(interval / 2)
@@ -277,7 +267,6 @@ def move_mouse_linear(destination, duration=0.5):
         y = random.uniform(prev_y, end_y) + random.uniform(50, distance/5)
         x, y = random_point((x, y), 5)
         key_points.append((x, y))
-        print(f"Point clé {i}: ({x}, {y})")
     key_points.append((end_x, end_y))
     # Générer les points le long de la courbe de Bézier
     points = random_curve(key_points, n_points)
@@ -296,13 +285,11 @@ def move_mouse_linear(destination, duration=0.5):
     
     # Déplacer la souris selon les points avec hésitations
     for index, (point, interval) in enumerate(zip(points, intervals)):
-        print(f"Point {index}: {point}")
         pyautogui.moveTo(point[0], point[1])
 
         # Vérifier si c'est un point d'hésitation
         if index in pause_indices:
             pause_duration = pause_durations[index]
-            print(f"Pause de {pause_duration:.3f} secondes à l'indice {index}")
             time.sleep(pause_duration)
 
         time.sleep(interval / 2)
