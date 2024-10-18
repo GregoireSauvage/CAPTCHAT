@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template
-from get_indicators import  extract_indicators, get_indicators
-from organize_data import clear_dataset
-from model import random_forest, test_model
+from src.get_indicators import  extract_indicators, get_indicators
+from src.organize_data import clear_dataset
+from ML.model import random_forest, test_model
 import csv
 import os
 import pandas as pd
