@@ -107,7 +107,7 @@ def random_forest(dataset):
     return
 
 
-def test_model(indicators, model_path='rf_mouse_movement_model.pkl'):
+def test_model(indicators, model_path='models/random_forestV1.pkl'):
     # Charger le modèle
     model = joblib.load(model_path)
 
