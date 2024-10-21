@@ -8,3 +8,5 @@ scipy
 selenium
 pyautogui
 joblib
+pydotplus
+IPython

@@ -102,7 +102,7 @@ def extract_data():
 def train_dataset():
     extract_data_from_csv()
     # Charger le dataset
-    filepath = "mouse_indicators_dataset.csv"
+    filepath = "data\extract_indicators\mouse_indicators_dataset.csv"
     dataset = pd.read_csv(filepath)
     
     # Exécuter le modèle de machine learning pour la classification

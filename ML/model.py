@@ -3,9 +3,42 @@ import numpy as np
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score, roc_curve
+from sklearn.tree import export_graphviz
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 import seaborn as sns
 import joblib
+import subprocess
+import os
+
+def visualize_tree(rf_model, feature_names, class_names, filename='tree.png'):
+    # Sélectionner un arbre de la forêt
+    estimator = rf_model.estimators_[0]
+    
+    # Exporter l'arbre en format DOT
+    export_graphviz(estimator, out_file='tree.dot', 
+                    feature_names=feature_names,
+                    class_names=class_names,
+                    rounded=True, proportion=False, 
+                    precision=2, filled=True)
+    
+    # Convertir le fichier DOT en PNG
+    try:
+        subprocess.check_call(['dot', '-Tpng', 'tree.dot', '-o', filename])
+    except Exception as e:
+        print("Erreur lors de la conversion du fichier DOT en PNG :", e)
+        return
+    
+    # Lire et afficher l'image avec Matplotlib
+    if os.path.exists(filename):
+        img = mpimg.imread(filename)
+        plt.figure(figsize=(20, 20))
+        plt.imshow(img)
+        plt.axis('off')
+        plt.show()
+    else:
+        print("Le fichier image n'existe pas.")
+
 
 def grid_search(rf_model, X_train, y_train):
     param_grid = {
@@ -40,7 +73,7 @@ def grid_search(rf_model, X_train, y_train):
     return rf_best_model # Retourne le modèle avec les meilleurs paramètres
 
 
-def random_forest(dataset):
+def random_forest(dataset, optimization=False):
     
     ### Prétraitement des données ###
     
@@ -62,8 +95,12 @@ def random_forest(dataset):
         n_jobs=-1  # Utiliser tous les cœurs du processeur
     )
     
-    # Entraîner le modèle sur l'ensemble d'entraînement
-    rf_model.fit(X_train, y_train)
+    if optimization:
+        # Optimisation des hyperparamètres avec Grid Search
+        rf_model = grid_search(rf_model, X_train, y_train)
+    else:
+        # Entraîner le modèle sur l'ensemble d'entraînement sans optimisation
+        rf_model.fit(X_train, y_train)
     
     
     
@@ -75,6 +112,19 @@ def random_forest(dataset):
     # Évaluer les performances
     print(classification_report(y_test, y_pred))
     
+    # Importance des caractéristiques
+    feature_importances = pd.Series(rf_model.feature_importances_, index=X_train.columns)
+    feature_importances.sort_values(ascending=False, inplace=True)
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x=feature_importances, y=feature_importances.index)
+    plt.title('Importance des caractéristiques')
+    plt.xlabel('Importance')
+    plt.ylabel('Caractéristiques')
+    plt.show()
+    
+    # Visualiser le premier arbre de la forêt
+    visualize_tree(rf_model, X_train.columns, rf_model.classes_)
+    
     # Matrice de confusion
     cm = confusion_matrix(y_test, y_pred)
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
@@ -83,6 +133,7 @@ def random_forest(dataset):
     plt.title('Matrice de confusion')
     plt.show()
 
+    
     # Score ROC-AUC
     y_pred_proba = rf_model.predict_proba(X_test)[:, 1]
     roc_auc = roc_auc_score(y_test.map({'human': 0, 'robot': 1}), y_pred_proba)
@@ -102,12 +153,12 @@ def random_forest(dataset):
     rf_model.feature_names_in_ = X_train.columns
     
     # Sauvegarder le modèle
-    joblib.dump(rf_model, 'rf_mouse_movement_model.pkl')
+    #joblib.dump(rf_model, 'models/random_forestV2_optimized.pkl')
     
     return
 
 
-def test_model(indicators, model_path='models/random_forestV1.pkl'):
+def test_model(indicators, model_path='models/random_forestV2_optimized.pkl'):
     # Charger le modèle
     model = joblib.load(model_path)
 
