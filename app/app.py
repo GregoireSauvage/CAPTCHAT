@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify, render_template
 from src.get_indicators import  extract_indicators, get_indicators
 from src.organize_data import clear_dataset
-from ML.model import random_forest, test_model
+from ML.random_forest import random_forest, test_random_forest
+from ML.XGBoost import train_xgboost, test_xgboost
 import csv
 import os
 import pandas as pd
@@ -106,7 +107,9 @@ def train_dataset():
     dataset = pd.read_csv(filepath)
     
     # Exécuter le modèle de machine learning pour la classification
-    random_forest(dataset)
+    #random_forest(dataset)
+    
+    train_xgboost(dataset)
     
     
     return jsonify({'status': 'success'}), 200
@@ -132,8 +135,9 @@ def predict():
         return jsonify({'status': 'error', 'message': 'Impossible d\'extraire les indicateurs'}), 400
 
     # Charger le modèle et faire une prédiction
-    prediction = test_model(indicators)
-
+    #prediction = test_random_forest(indicators)
+    prediction = test_xgboost(indicators)
+    
     # Renvoyer la prédiction au client (robot ou humain)
     return jsonify({'status': 'success', 'prediction': prediction}), 200
 
