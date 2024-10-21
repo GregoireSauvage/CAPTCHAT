@@ -10,3 +10,4 @@ pyautogui
 joblib
 pydotplus
 IPython
+xgboost
