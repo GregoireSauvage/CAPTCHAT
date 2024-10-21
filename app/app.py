@@ -7,14 +7,15 @@ import os
 import pandas as pd
 
 def extract_data_from_csv():
-    filepath = "data.csv"
+    filepath = "data\collect_data\data_all.csv"
+
     # extrait les données de la souris pour chaque essai, extrait les indicateurs utiles et les mets dans un dataframe
     dataset = get_indicators(filepath=filepath) 
     
     dataset = clear_dataset(dataset=dataset)
     
     # Sauvegarder le dataset pour le machine learning
-    dataset.to_csv('mouse_indicators_dataset.csv', index=False)
+    dataset.to_csv('data\extract_indicators\mouse_indicators_dataset.csv', index=False)
 
 def save_data(session_id, mouse_movements, click_coordinates, label):
     # Nom du fichier CSV
@@ -124,7 +125,7 @@ def predict():
     click_coordinates = data.get('clickCoordinates', []) # Non utilisé pour le moment
 
     # Extraire les indicateurs à partir des mouvements de souris
-    indicators = extract_indicators(mouse_movements=mouse_movements, show_figure=True)
+    indicators = extract_indicators(mouse_movements=mouse_movements, show_figure=False)
 
     # Vérifier que les indicateurs sont bien extraits
     if indicators is None or len(indicators) == 0:

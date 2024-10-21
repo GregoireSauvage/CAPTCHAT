@@ -68,72 +68,103 @@ def simulate_nice_click_selenium(driver, mouse, button_x, button_y, screen_width
 
 def simulate_click_selenium(driver, mouse, button_x, button_y, screen_width, screen_height):
     
-    
-    # Point de départ du mouvement (par exemple, coin supérieur gauche)
-    start_x = screen_width/2
-    start_y = screen_height/2
+    try:
+        # Point de départ du mouvement (par exemple, coin supérieur gauche)
+        start_x = screen_width/2
+        start_y = screen_height/2
 
-    # Randomise le point de départ
-    start_x += random.randint(-screen_width/4, screen_width/4)
-    start_y += random.randint(-screen_height/4, screen_height/4)
+        # Randomise le point de départ
+        start_x += random.randint(-screen_width/4, screen_width/4)
+        start_y += random.randint(-screen_height/4, screen_height/4)
 
-    print(f"Point de départ : ({start_x}, {start_y})")
-    
-    # Créer un constructeur d'actions
-    actions = ActionBuilder(driver, mouse)
+        print(f"Point de départ : ({start_x}, {start_y})")
+        
+        # Créer un constructeur d'actions
+        actions = ActionBuilder(driver, mouse)
 
-    # Déplacer la souris au point de départ
-    actions.pointer_action.move_to_location(int(start_x), int(start_y))
-    actions.perform()
-
-    # Nombre d'étapes pour le mouvement
-    steps = random.randint(5, 7) # (à ajuster si nécessaire)
-    print(f"Nombre d'étapes : {steps}")
-    # Calculer les positions intermédiaires
-    x_positions = [start_x + (button_x - start_x) * (i + 1) / steps for i in range(steps)]
-    y_positions = [start_y + (button_y - start_y) * (i + 1) / steps for i in range(steps)]
-
-    # Déplacer la souris en ligne droite vers le bouton
-    for x, y in zip(x_positions, y_positions):
-        actions.pointer_action.move_to_location(int(x), int(y))
+        # Déplacer la souris au point de départ
+        actions.pointer_action.move_to_location(int(start_x), int(start_y))
         actions.perform()
 
-    # Cliquer sur le bouton
-    actions.pointer_action.click()
-    actions.perform()
-    
+        # Nombre d'étapes pour le mouvement
+        steps = random.randint(5, 7) # (à ajuster si nécessaire)
+        print(f"Nombre d'étapes : {steps}")
+        # Calculer les positions intermédiaires
+        x_positions = [start_x + (button_x - start_x) * (i + 1) / steps for i in range(steps)]
+        y_positions = [start_y + (button_y - start_y) * (i + 1) / steps for i in range(steps)]
+
+        # Déplacer la souris en ligne droite vers le bouton
+        for x, y in zip(x_positions, y_positions):
+            actions.pointer_action.move_to_location(int(x), int(y))
+            actions.perform()
+
+        # Cliquer sur le bouton
+        actions.pointer_action.click()
+        actions.perform()
+    except Exception as e:
+        print(f"Erreur: {e}")
+        return False
+        
     return True
 
 
 def simulate_all_clicks(nb_clicks, driver, mouse, button_x, button_y, screen_width, screen_height, train=True):
-    nb_clicks = int(nb_clicks/5)
-    # Simuler n clicks sur le bouton
+    nb_clicks = int(nb_clicks/10)
+    # Simule un déplacement en ligne droite vers le bouton
     for i in range(nb_clicks):
         print("Click: ", i+1)
         simulate_click_selenium(driver, mouse, button_x, button_y, screen_width, screen_height)
-        time.sleep(3)  # Attendre un court instant entre les clics (à ajuster si nécessaire)
+        time.sleep(1)  # Attendre un court instant entre les clics (à ajuster si nécessaire)
         driver.refresh()
+
+        # Simule un déplacement en ligne droite vers le bouton avec perturbations
     for i in range(nb_clicks):
         print("Click Linear PyAutoGui: ", i+1)
-        simulate_linear_click_pyautogui(button_x, button_y, screen_width, screen_height, train)
-        time.sleep(3)
+        simulate_linear_click_pyautogui(button_x, button_y, screen_width, screen_height, perturbations=False)
+        time.sleep(1)
         driver.refresh()
+    # Simule un déplacement en ligne droite vers le bouton avec beaucoup de perturbations
+    for i in range(nb_clicks):
+        print("Click Linear PyAutoGui with perturbations: ", i+1)
+        simulate_linear_click_pyautogui(button_x, button_y, screen_width, screen_height, perturbations=True)
+        time.sleep(1)
+        driver.refresh()
+    # Simule un déplacement avec des forts changements de direction vers le bouton
     for i in range(nb_clicks):
         print("Click Random PyAutoGui: ", i+1)
-        simulate_random_click_pyautogui(button_x, button_y, screen_width, screen_height, train)
-        time.sleep(3)
+        simulate_random_click_pyautogui(button_x, button_y, screen_width, screen_height, perturbations=False)
+        time.sleep(1)
         driver.refresh()
+    # Simule un déplacement avec des forts changements de direction vers le bouton avec des perturbations
+    for i in range(nb_clicks):
+        print("Click Random PyAutoGui with perturbations: ", i+1)
+        simulate_random_click_pyautogui(button_x, button_y, screen_width, screen_height, perturbations=True)
+        time.sleep(1)
+        driver.refresh()
+    # Simule un déplacement en suivant une spline cubique vers le bouton
     for i in range(nb_clicks):
         print("Click Cubic Spline PyAutoGui: ", i+1)
-        simulate_cubic_spline_click_pyautogui(button_x, button_y, screen_width, screen_height, train)
-        time.sleep(3)
+        simulate_cubic_spline_click_pyautogui(button_x, button_y, screen_width, screen_height, perturbations=False)
+        time.sleep(1)
         driver.refresh()
+    # Simule un déplacement en suivant une spline cubique vers le bouton avec des perturbations
+    for i in range(nb_clicks):
+        print("Click Cubic Spline PyAutoGui with perturbations: ", i+1)
+        simulate_cubic_spline_click_pyautogui(button_x, button_y, screen_width, screen_height, perturbations=True)
+        time.sleep(1)
+        driver.refresh()
+    # Simule un déplacement en suivant une courbe de Bézier vers le bouton
     for i in range(nb_clicks):
         print("Click Bezier PyAutoGui: ", i+1)
-        simulate_bezier_click_pyautogui(button_x, button_y, screen_width, screen_height, train)
-        time.sleep(3)
+        simulate_bezier_click_pyautogui(button_x, button_y, screen_width, screen_height, perturbations=False)
+        time.sleep(1)
         driver.refresh()
-    
+    # Simule un déplacement en suivant une courbe de Bézier vers le bouton avec des perturbations
+    for i in range(nb_clicks*2):
+        print("Click Bezier PyAutoGui with perturbations: ", i+1)
+        simulate_bezier_click_pyautogui(button_x, button_y, screen_width, screen_height, perturbations=True)
+        time.sleep(1)
+        driver.refresh()
     
 
 
@@ -172,7 +203,7 @@ def main():
     mouse = PointerInput(POINTER_MOUSE, "mouse")
 
     # Simuler n clicks sur le bouton
-    simulate_all_clicks(500, driver, mouse, button_x, button_y, int(screen_width), int(screen_height), train=True)
+    simulate_all_clicks(600, driver, mouse, button_x, button_y, int(screen_width), int(screen_height), train=True)
    
     # Attendre que les données soient envoyées
     time.sleep(2)

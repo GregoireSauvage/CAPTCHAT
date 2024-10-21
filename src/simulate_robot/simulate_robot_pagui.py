@@ -105,7 +105,7 @@ def generate_random_durations(total_duration, n_points):
     return durations / durations.sum() * total_duration
 
 # Fonction pour déplacer la souris de manière réaliste en utilisant une courbe de Bézier
-def move_mouse_bezier(destination, duration=0.5):
+def move_mouse_bezier(destination, duration=0.5, perturbations=True):
     start_x, start_y = pyautogui.position()
     start_x, start_y = random_point((start_x, start_y), 5) # Ajouter une variation aléatoire aux points de départ
     end_x, end_y = destination
@@ -128,8 +128,14 @@ def move_mouse_bezier(destination, duration=0.5):
     points = bezier_curve((start_x, start_y), control1, control2, (end_x, end_y), n_points)
 
     # Ajouter des perturbations aléatoires pour simuler les changements brusques de direction
-    points = perturbation(points)
+    if perturbations:
+        points = perturbation(points)
     
+    # vérifie que les points ont des coordonnées valides (positives)
+    for i, (x, y) in enumerate(points):
+        if x <= 0 or y <= 0:
+            points[i] = (max(1, x), max(1, y))
+            
     # Générer des intervalles de temps aléatoires
     intervals = generate_random_durations(duration, n_points)
 
@@ -144,7 +150,7 @@ def move_mouse_bezier(destination, duration=0.5):
         pyautogui.moveTo(point[0], point[1])
 
         # Vérifier si c'est un point d'hésitation
-        if index in pause_indices:
+        if index in pause_indices and perturbations:
             pause_duration = pause_durations[index]
             time.sleep(pause_duration)
 
@@ -152,7 +158,7 @@ def move_mouse_bezier(destination, duration=0.5):
         
 
 # Fonction pour déplacer la souris de manière réaliste en utilisant une courbe avec des splines cubiques
-def move_mouse_cubic_spline(destination, duration=0.5):
+def move_mouse_cubic_spline(destination, duration=0.5, perturbations=True):
     start_x, start_y = pyautogui.position()
     start_x, start_y = random_point((start_x, start_y), 5) # Ajouter une variation aléatoire aux points de départ
     end_x, end_y = destination
@@ -173,9 +179,15 @@ def move_mouse_cubic_spline(destination, duration=0.5):
     # Générer les points le long de la courbe cubique spline
     points = cubic_spline_curve((start_x, start_y), (end_x, end_y), n_points)
     
-    # Ajouter des perturbations aléatoires pour simuler les changements brusques de direction
-    points = perturbation(points)
-     
+    if perturbations:
+        # Ajouter des perturbations aléatoires pour simuler les changements brusques de direction
+        points = perturbation(points)
+        
+    # vérifie que les points ont des coordonnées valides (positives)
+    for i, (x, y) in enumerate(points):
+        if x <= 0 or y <= 0:
+            points[i] = (max(1, x), max(1, y))
+    
     # Générer des intervalles de temps aléatoires
     intervals = generate_random_durations(duration, n_points)
 
@@ -190,7 +202,7 @@ def move_mouse_cubic_spline(destination, duration=0.5):
         pyautogui.moveTo(point[0], point[1])
 
         # Vérifier si c'est un point d'hésitation
-        if index in pause_indices:
+        if perturbations and index in pause_indices:
             pause_duration = pause_durations[index]
             time.sleep(pause_duration)
 
@@ -198,7 +210,7 @@ def move_mouse_cubic_spline(destination, duration=0.5):
 
 
 # Fonction pour déplacer la souris avec des changements de direction aléatoires
-def move_mouse_randomly(destination, duration=0.5):
+def move_mouse_randomly(destination, duration=0.5, perturbations=True):
     start_x, start_y = pyautogui.position()
     start_x, start_y = random_point((start_x, start_y), 5) # Ajouter une variation aléatoire aux points de départ
 
@@ -222,8 +234,14 @@ def move_mouse_randomly(destination, duration=0.5):
     # Générer les points le long de la courbe de Bézier
     points = random_curve(key_points, n_points)
 
-    # Ajouter des perturbations aléatoires pour simuler les changements brusques de direction
-    points = perturbation(points) 
+    if perturbations:
+        # Ajouter des perturbations aléatoires pour simuler les changements brusques de direction
+        points = perturbation(points)
+    
+    # vérifie que les points ont des coordonnées valides (positives)
+    for i, (x, y) in enumerate(points):
+        if x <= 0 or y <= 0:
+            points[i] = (max(1, x), max(1, y))
     
     # Générer des intervalles de temps aléatoires
     intervals = generate_random_durations(duration, n_points)
@@ -239,7 +257,7 @@ def move_mouse_randomly(destination, duration=0.5):
         pyautogui.moveTo(point[0], point[1])
 
         # Vérifier si c'est un point d'hésitation
-        if index in pause_indices:
+        if perturbations and index in pause_indices:
             pause_duration = pause_durations[index]
             time.sleep(pause_duration)
 
@@ -247,7 +265,7 @@ def move_mouse_randomly(destination, duration=0.5):
 
 
 # Fonction pour déplacer la souris avec des changements de direction aléatoires
-def move_mouse_linear(destination, duration=0.5):
+def move_mouse_linear(destination, duration=0.5, perturbations=True):
     start_x, start_y = pyautogui.position()
     start_x, start_y = random_point((start_x, start_y), 5) # Ajouter une variation aléatoire aux points de départ
 
@@ -270,9 +288,15 @@ def move_mouse_linear(destination, duration=0.5):
     key_points.append((end_x, end_y))
     # Générer les points le long de la courbe de Bézier
     points = random_curve(key_points, n_points)
-
-    # Ajouter des perturbations aléatoires pour simuler les changements brusques de direction
-    points = perturbation(points)
+    
+    if perturbations:
+        # Ajouter des perturbations aléatoires pour simuler les changements brusques de direction
+        points = perturbation(points)
+    
+    # vérifie que les points ont des coordonnées valides (positives)
+    for i, (x, y) in enumerate(points):
+        if x <= 0 or y <= 0:
+            points[i] = (max(1, x), max(1, y))
     
     # Générer des intervalles de temps aléatoires
     intervals = generate_random_durations(duration, n_points)
@@ -288,7 +312,7 @@ def move_mouse_linear(destination, duration=0.5):
         pyautogui.moveTo(point[0], point[1])
 
         # Vérifier si c'est un point d'hésitation
-        if index in pause_indices:
+        if perturbations and index in pause_indices:
             pause_duration = pause_durations[index]
             time.sleep(pause_duration)
 
@@ -296,82 +320,91 @@ def move_mouse_linear(destination, duration=0.5):
 
 
 
-def simulate_bezier_click_pyautogui(button_x, button_y, screen_width, screen_height):
-    depart = (500, 500)
+def simulate_bezier_click_pyautogui(button_x, button_y, screen_width, screen_height, perturbations=True):
+    try:
+        depart = (500, 500)
 
-    button = (button_x, button_y)
-    # Déplacer la souris vers son point de l'écran
-    depart = (random.uniform(0, screen_width), random.uniform(0, screen_height))
-    
-    
-    print(f"Point de départ : {depart}")
-    pyautogui.moveTo(depart[0], depart[1])
-    print(f"Point d'arrivée : {button}")
-    # Déplacer la souris de manière réaliste vers le bouton
-    move_mouse_bezier(button, duration=0.2)
-    
-    # Cliquer sur le bouton
-    click_randomly(duration=0.2)
-    
-    return
-
-def simulate_cubic_spline_click_pyautogui(button_x, button_y, screen_width, screen_height):
-    depart = (500, 500)
-
-    button = (button_x, button_y)
-    # Déplacer la souris vers son point de l'écran
-    depart = (random.uniform(0, screen_width), random.uniform(0, screen_height))
-    
-    
-    print(f"Point de départ : {depart}")
-    pyautogui.moveTo(depart[0], depart[1])
-    print(f"Point d'arrivée : {button}")
-    # Déplacer la souris de manière réaliste vers le bouton
-    move_mouse_cubic_spline(button, duration=0.2)
-    
-    # Cliquer sur le bouton
-    click_randomly(duration=0.2)
-    
-    return
-
-
-def simulate_random_click_pyautogui(button_x, button_y, screen_width, screen_height):
-    depart = (500, 500)
-
-    button = (button_x, button_y)
+        button = (button_x, button_y)
         # Déplacer la souris vers son point de l'écran
-    depart = (random.uniform(0, screen_width), random.uniform(0, screen_height))
-    
-    
-    print(f"Point de départ : {depart}")
-    pyautogui.moveTo(depart[0], depart[1])
-    print(f"Point d'arrivée : {button}")
-    # Déplacer la souris de manière réaliste vers le bouton
-    move_mouse_randomly(button, duration=0.2)
-    
-    # Cliquer sur le bouton
-    click_randomly(duration=0.2)
-    
+        depart = (random.uniform(0, screen_width), random.uniform(0, screen_height))
+        
+        
+        print(f"Point de départ : {depart}")
+        pyautogui.moveTo(depart[0], depart[1])
+        print(f"Point d'arrivée : {button}")
+        # Déplacer la souris de manière réaliste vers le bouton
+        move_mouse_bezier(button, duration=0.2, perturbations=perturbations)
+        
+        # Cliquer sur le bouton
+        click_randomly(duration=0.2)
+    except Exception as e:
+        print(f"Erreur: {e}")
+    return
+
+def simulate_cubic_spline_click_pyautogui(button_x, button_y, screen_width, screen_height, perturbations=True):
+    try:
+        depart = (500, 500)
+
+        button = (button_x, button_y)
+        # Déplacer la souris vers son point de l'écran
+        depart = (random.uniform(0, screen_width), random.uniform(0, screen_height))
+        
+        
+        print(f"Point de départ : {depart}")
+        pyautogui.moveTo(depart[0], depart[1])
+        print(f"Point d'arrivée : {button}")
+        # Déplacer la souris de manière réaliste vers le bouton
+        move_mouse_cubic_spline(button, duration=0.2, perturbations=perturbations)
+        
+        # Cliquer sur le bouton
+        click_randomly(duration=0.2)
+    except Exception as e:
+        print(f"Erreur: {e}")
     return
 
 
-def simulate_linear_click_pyautogui(button_x, button_y, screen_width, screen_height):
-    depart = (500, 500)
+def simulate_random_click_pyautogui(button_x, button_y, screen_width, screen_height, perturbations=True):
+    try:
+        depart = (500, 500)
 
-    button = (button_x, button_y)
-        # Déplacer la souris vers son point de l'écran
-    depart = (random.uniform(0, screen_width), random.uniform(0, screen_height))
-    
-    
-    print(f"Point de départ : {depart}")
-    pyautogui.moveTo(depart[0], depart[1])
-    print(f"Point d'arrivée : {button}")
-    # Déplacer la souris de manière réaliste vers le bouton
-    move_mouse_linear(button, duration=0.2)
-    
-    # Cliquer sur le bouton
-    click_randomly(duration=0.2)
-    
+        button = (button_x, button_y)
+            # Déplacer la souris vers son point de l'écran
+        depart = (random.uniform(0, screen_width), random.uniform(0, screen_height))
+        
+        
+        print(f"Point de départ : {depart}")
+        pyautogui.moveTo(depart[0], depart[1])
+        print(f"Point d'arrivée : {button}")
+        # Déplacer la souris de manière réaliste vers le bouton
+        move_mouse_randomly(button, duration=0.2, perturbations=perturbations)
+        
+        # Cliquer sur le bouton
+        click_randomly(duration=0.2)
+    except Exception as e:
+        print(f"Erreur: {e}")
+        
+    return
+
+
+def simulate_linear_click_pyautogui(button_x, button_y, screen_width, screen_height, perturbations=True):
+    try:
+        depart = (500, 500)
+        button = (button_x, button_y)
+            # Déplacer la souris vers son point de l'écran
+        depart = (random.uniform(0, screen_width), random.uniform(0, screen_height))
+        
+        
+        print(f"Point de départ : {depart}")
+        pyautogui.moveTo(depart[0], depart[1])
+        print(f"Point d'arrivée : {button}")
+        # Déplacer la souris de manière réaliste vers le bouton
+        move_mouse_linear(button, duration=0.2, perturbations=perturbations)
+        
+        # Cliquer sur le bouton
+        click_randomly(duration=0.2)
+    except Exception as e:
+        print(f"Erreur: {e}")
+        
     return
 
 
@@ -394,16 +427,49 @@ def perturbation(points):
 def main():
     taille_ecran = coin_bas_droit[0] - coin_haut_gauche[0], coin_bas_droit[1] - coin_haut_gauche[1]
     
-    n = 1
+    
+    n = int(150/6)
     for i in range(n):
-        # refresh la page
+        # Simule un déplacement linéaire vers le bouton
         pyautogui.moveTo(refresh[0], refresh[1])
         click_randomly(duration=0.2)
-    
-        simulate_bezier_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1])
-        #simulate_random_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1])
-        #simulate_linear_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1])
-        #simulate_cubic_spline_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1])
+        simulate_linear_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1], perturbations=False)
+        time.sleep(1)
+    for i in range(n):
+        # Simule un déplacement linéaire vers le bouton avec des perturbations
+        pyautogui.moveTo(refresh[0], refresh[1])
+        click_randomly(duration=0.2)
+        simulate_linear_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1], perturbations=True)
+        time.sleep(1)
+    for i in range(n):
+        # Simule un déplacement random vers le boutons
+        pyautogui.moveTo(refresh[0], refresh[1])
+        click_randomly(duration=0.2)
+        simulate_random_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1], perturbations=False)
+        time.sleep(1)
+    for i in range(n):
+        # Simule un déplacement random vers le bouton avec des perturbations
+        pyautogui.moveTo(refresh[0], refresh[1])
+        click_randomly(duration=0.2)
+        simulate_random_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1], perturbations=True)
+        time.sleep(1)
+
+    for i in range(n):
+        # Simule un déplacement en suivant une courb de bézier vers le bouton
+        pyautogui.moveTo(refresh[0], refresh[1])
+        click_randomly(duration=0.2)
+        simulate_bezier_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1], perturbations=False)
+        time.sleep(1)
+    for i in range(n):
+        # Simule un déplacement en suivant une courb de bézier vers le bouton avec des perturbations
+        pyautogui.moveTo(refresh[0], refresh[1])
+        click_randomly(duration=0.2)
+        simulate_bezier_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1], perturbations=True)
+        time.sleep(1)
+        
+        
+            
+        
 
 if __name__ == "__main__":
     main()
