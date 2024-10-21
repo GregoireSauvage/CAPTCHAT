@@ -11,33 +11,35 @@ import joblib
 import subprocess
 import os
 
-def visualize_tree(rf_model, feature_names, class_names, filename='tree.png'):
-    # Sélectionner un arbre de la forêt
-    estimator = rf_model.estimators_[0]
+def visualize_tree(rf_model, feature_names, class_names, filename, folder):
+    for i in range(10):
+        # Sélectionner un arbre de la forêt
+        estimator = rf_model.estimators_[i]
+        
+        # Exporter l'arbre en format DOT
+        export_graphviz(estimator, out_file='tree.dot', 
+                        feature_names=feature_names,
+                        class_names=class_names,
+                        rounded=True, proportion=False, 
+                        precision=2, filled=True)
+        
+        # Convertir le fichier DOT en PNG
+        try:
+            filepath = f'{folder}/{filename}_{i+1}.png'
+            subprocess.check_call(['dot', '-Tpng', 'tree.dot', '-o', filepath])
+        except Exception as e:
+            print("Erreur lors de la conversion du fichier DOT en PNG :", e)
+            return
     
-    # Exporter l'arbre en format DOT
-    export_graphviz(estimator, out_file='tree.dot', 
-                    feature_names=feature_names,
-                    class_names=class_names,
-                    rounded=True, proportion=False, 
-                    precision=2, filled=True)
-    
-    # Convertir le fichier DOT en PNG
-    try:
-        subprocess.check_call(['dot', '-Tpng', 'tree.dot', '-o', filename])
-    except Exception as e:
-        print("Erreur lors de la conversion du fichier DOT en PNG :", e)
-        return
-    
-    # Lire et afficher l'image avec Matplotlib
-    if os.path.exists(filename):
-        img = mpimg.imread(filename)
-        plt.figure(figsize=(20, 20))
-        plt.imshow(img)
-        plt.axis('off')
-        plt.show()
-    else:
-        print("Le fichier image n'existe pas.")
+        # Lire et afficher l'image avec Matplotlib
+        if os.path.exists(filepath):
+            img = mpimg.imread(filepath)
+            plt.figure(figsize=(20, 20))
+            plt.imshow(img)
+            plt.axis('off')
+            plt.show()
+        else:
+            print("Le fichier image n'existe pas.")
 
 
 def grid_search(rf_model, X_train, y_train):
@@ -47,7 +49,7 @@ def grid_search(rf_model, X_train, y_train):
     'min_samples_split': [2, 5, 10],
     'min_samples_leaf': [1, 2, 4],
     'max_features': ['auto', 'sqrt']
-}
+    }
 
     grid_search = GridSearchCV(
         estimator=rf_model,
@@ -73,7 +75,9 @@ def grid_search(rf_model, X_train, y_train):
     return rf_best_model # Retourne le modèle avec les meilleurs paramètres
 
 
-def random_forest(dataset, optimization=False):
+def random_forest(dataset, optimization=True):
+    folder = 'models/RF_V2_optimized'
+    file = 'random_forestV2_optimized.pkl'
     
     ### Prétraitement des données ###
     
@@ -123,7 +127,7 @@ def random_forest(dataset, optimization=False):
     plt.show()
     
     # Visualiser le premier arbre de la forêt
-    visualize_tree(rf_model, X_train.columns, rf_model.classes_)
+    visualize_tree(rf_model, X_train.columns, rf_model.classes_, filename='tree', folder=folder)
     
     # Matrice de confusion
     cm = confusion_matrix(y_test, y_pred)
@@ -153,12 +157,12 @@ def random_forest(dataset, optimization=False):
     rf_model.feature_names_in_ = X_train.columns
     
     # Sauvegarder le modèle
-    #joblib.dump(rf_model, 'models/random_forestV2_optimized.pkl')
+    #joblib.dump(rf_model, f'models/{folder}/{file}.pkl')
     
     return
 
 
-def test_model(indicators, model_path='models/random_forestV2_optimized.pkl'):
+def test_model(indicators, model_path='models/RF_V2_optimized/random_forestV2_optimized.pkl'):
     # Charger le modèle
     model = joblib.load(model_path)
 

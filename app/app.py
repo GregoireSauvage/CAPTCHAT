@@ -7,7 +7,7 @@ import os
 import pandas as pd
 
 def extract_data_from_csv():
-    filepath = "data\collect_data\data_all.csv"
+    filepath = "data/collect_data/data_all.csv"
 
     # extrait les données de la souris pour chaque essai, extrait les indicateurs utiles et les mets dans un dataframe
     dataset = get_indicators(filepath=filepath) 
