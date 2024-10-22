@@ -6,8 +6,39 @@ from xgboost import XGBClassifier
 import matplotlib.pyplot as plt
 import seaborn as sns
 import joblib
+import xgboost as xgb
+from xgboost import XGBClassifier
+import graphviz
 
-def train_xgboost(dataset, optimization=False):
+def export_xgboost_tree_to_png(xgb_model, num_tree=0, feature_names=None, filename='xgboost_tree', folder="models/XGBoost_V1"):
+    # Obtenir la représentation Graphviz de l'arbre
+    dot_data = xgb.to_graphviz(xgb_model, num_trees=num_tree, feature_names=feature_names)
+
+    # Sauvegarder le fichier DOT
+    dot_filename = f'{folder}/plot_training/{filename}_{num_tree+1}.dot'
+    dot_data.save(dot_filename)
+
+    # Convertir le fichier DOT en PNG
+    png_filename = f'{folder}/plot_training/{filename}_{num_tree+1}.png'
+    try:
+        # Assurez-vous que Graphviz est installé sur votre système
+        from subprocess import check_call
+        check_call(['dot', '-Tpng', dot_filename, '-o', png_filename])
+        print(f"Arbre {num_tree} exporté en {png_filename}")
+    except Exception as e:
+        print(f"Erreur lors de la conversion du fichier DOT en PNG : {e}")
+
+    # Afficher l'image
+    import matplotlib.image as mpimg
+    import matplotlib.pyplot as plt
+    img = mpimg.imread(png_filename)
+    plt.figure(figsize=(20, 20))
+    plt.imshow(img)
+    plt.axis('off')
+    plt.show()
+    
+    
+def train_xgboost(dataset, optimization=True):
 
     ### Prétraitement des données ###
     # Diviser les données en caractéristiques et étiquettes
@@ -106,17 +137,26 @@ def train_xgboost(dataset, optimization=False):
 
     ### Sauvegarde du modèle ###
     # Enregistrer le modèle
-    joblib.dump(xgb_model, 'models/XGBoost_V1/xgboost_model.pkl')
+    folder = 'models/XGBoost_V1_optimized'
+    filename = 'xgboost_optimized_model.pkl'
+    joblib.dump(xgb_model, f'{folder}/{filename}')
 
     # Sauvegarder l'encodeur de labels
-    joblib.dump(le, 'models/XGBoost_V1/label_encoder.pkl')
+    joblib.dump(le, f'{folder}/label_encoder.pkl')
 
     print('Le modèle XGBoost a été entraîné et sauvegardé avec succès.')
 
+    # Obtenir les noms des caractéristiques
+    feature_names = xgb_model.feature_names_in_
+
+    # Exporter et visualiser le premier arbre
+    export_xgboost_tree_to_png(xgb_model, num_tree=0, feature_names=feature_names, filename='tree', folder=folder)
+    export_xgboost_tree_to_png(xgb_model, num_tree=9, feature_names=feature_names, filename='tree', folder=folder)
+    
     return xgb_model  # Retourne le modèle entraîné
 
 
-def test_xgboost(indicators, model_path='models/XGBoost_V1/xgboost_model.pkl', encoder_path='models/XGBoost_V1/label_encoder.pkl'):
+def test_xgboost(indicators, model_path='models/XGBoost_V1_optimized/xgboost_optimized_model.pkl', encoder_path='models/XGBoost_V1_optimized/label_encoder.pkl'):
 
     # Charger le modèle
     model = joblib.load(model_path)
