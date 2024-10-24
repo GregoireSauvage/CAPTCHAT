@@ -1,7 +1,35 @@
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
-import seaborn as sns
-import matplotlib.pyplot as plt
+import pandas as pd
+
+def preprocess_indicators(indicators):
+    """
+    Prétraite les indicateurs en les standardisant.
+
+    Paramètres:
+    -----------
+    indicators : pd.DataFrame
+        DataFrame contenant les indicateurs à standardiser.
+
+    Retourne:
+    ---------
+    indicators_scaled : pd.DataFrame
+        DataFrame des indicateurs standardisés.
+    scaler : StandardScaler
+        Objet StandardScaler ajusté sur les données fournies.
+    """
+    # Créer une instance de StandardScaler
+    scaler = StandardScaler()
+
+    # Ajuster le scaler sur les données et les transformer
+    indicators_scaled_array = scaler.fit_transform(indicators)
+
+    # Convertir le tableau numpy résultant en DataFrame
+    indicators_scaled = pd.DataFrame(indicators_scaled_array, columns=indicators.columns, index=indicators.index)
+
+    return indicators_scaled, scaler
+
+
 
 def clear_dataset(dataset):
     

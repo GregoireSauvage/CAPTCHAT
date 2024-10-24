@@ -162,7 +162,7 @@ def random_forest(dataset, optimization=True):
     return
 
 
-def test_random_forest(indicators, model_path='models/RF_V2_optimized/random_forestV2_optimized.pkl'):
+def predict_random_forest(indicators, model_path='models/RF_V2_optimized/random_forestV2_optimized.pkl'):
     # Charger le modèle
     model = joblib.load(model_path)
 

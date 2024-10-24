@@ -211,7 +211,7 @@ def train_xgboost(dataset, optimization=True):
     return xgb_model  # Retourne le modèle entraîné
 
 
-def test_xgboost(indicators, model_path='models/XGBoost_V2_optimized/xgboost_optimized_model.pkl', encoder_path='models/XGBoost_V2_optimized/label_encoder.pkl'):
+def predict_xgboost(indicators, model_path='models/XGBoost_V2_optimized/xgboost_optimized_model.pkl', encoder_path='models/XGBoost_V2_optimized/label_encoder.pkl'):
 
     # Charger le modèle
     model = joblib.load(model_path)
