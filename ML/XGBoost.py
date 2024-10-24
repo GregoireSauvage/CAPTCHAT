@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV
 from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score, roc_curve
 from xgboost import XGBClassifier
 import matplotlib.pyplot as plt
@@ -10,7 +10,33 @@ import xgboost as xgb
 from xgboost import XGBClassifier
 import graphviz
 
-def export_xgboost_tree_to_png(xgb_model, num_tree=0, feature_names=None, filename='xgboost_tree', folder="models/XGBoost_V1"):
+
+def grid_search(xgb_model, X_train, y_train, param_distributions, cv=5, n_iter=50, scoring='roc_auc'):
+        
+    # Initialiser l'objet RandomizedSearchCV
+    random_search = RandomizedSearchCV(
+        estimator=xgb_model,
+        param_distributions=param_distributions,
+        n_iter=n_iter,
+        scoring=scoring,
+        cv=cv,
+        verbose=1,
+        n_jobs=-1,
+        random_state=42
+    )
+
+    # Exécuter la recherche aléatoire
+    random_search.fit(X_train, y_train)
+
+    # Récupérer le meilleur modèle et les meilleurs paramètres
+    best_model = random_search.best_estimator_
+    best_params = random_search.best_params_
+
+    return best_model, best_params
+
+
+
+def export_xgboost_tree_to_png(xgb_model, num_tree=0, feature_names=None, filename='xgboost_tree', folder="models/XGBoost_V2"):
     # Obtenir la représentation Graphviz de l'arbre
     dot_data = xgb.to_graphviz(xgb_model, num_trees=num_tree, feature_names=feature_names)
 
@@ -65,29 +91,58 @@ def train_xgboost(dataset, optimization=True):
     )
 
     if optimization:
+        
         # Définition de la grille de paramètres pour la recherche en grille
-        param_grid = {
-            'n_estimators': [100, 200, 500],
-            'max_depth': [3, 5, 7],
-            'learning_rate': [0.01, 0.1, 0.2],
-            'subsample': [0.7, 0.8, 0.9],
-            'colsample_bytree': [0.7, 0.8, 0.9]
+        # param_grid = {
+        #     'n_estimators': [100, 200, 500],
+        #     'max_depth': [3, 5, 7],
+        #     'learning_rate': [0.01, 0.1, 0.2],
+        #     'subsample': [0.7, 0.8, 0.9],
+        #     'colsample_bytree': [0.7, 0.8, 0.9]
+        # }
+
+        # grid_search = GridSearchCV(
+        #     estimator=xgb_model,
+        #     param_grid=param_grid,
+        #     cv=5,
+        #     scoring='roc_auc',
+        #     n_jobs=-1,
+        #     verbose=1
+        # )
+        
+        # grid_search.fit(X_train, y_train)
+
+        # print("Meilleurs paramètres :", grid_search.best_params_)
+        
+        # Définition des distributions de paramètres pour la recherche
+        param_distributions = {
+            'n_estimators': [100, 200, 500, 1000],
+            'max_depth': np.arange(3, 10),
+            'learning_rate': [0.01, 0.05, 0.1, 0.2],
+            'subsample': [0.6, 0.8, 1.0],
+            'colsample_bytree': [0.6, 0.8, 1.0],
+            'gamma': [0, 0.1, 0.2, 0.3],
+            'reg_alpha': [0, 0.01, 0.1, 1],
+            'reg_lambda': [1, 1.5, 2, 5]
         }
 
-        grid_search = GridSearchCV(
-            estimator=xgb_model,
-            param_grid=param_grid,
+        # Recherche aléatoire des meilleurs paramètres
+        xgb_model, best_params = grid_search( 
+            xgb_model,
+            X_train,
+            y_train,
+            param_distributions,
             cv=5,
-            scoring='roc_auc',
-            n_jobs=-1,
-            verbose=1
+            n_iter=50,
+            scoring='roc_auc'
         )
+        print("Meilleurs paramètres :", best_params)
+        
 
-        grid_search.fit(X_train, y_train)
-
-        print("Meilleurs paramètres :", grid_search.best_params_)
+        
 
         xgb_model = grid_search.best_estimator_
+
     else:
         # Entraîner le modèle sur l'ensemble d'entraînement
         xgb_model.fit(X_train, y_train)
@@ -137,7 +192,7 @@ def train_xgboost(dataset, optimization=True):
 
     ### Sauvegarde du modèle ###
     # Enregistrer le modèle
-    folder = 'models/XGBoost_V1_optimized'
+    folder = 'models/XGBoost_V2_optimized'
     filename = 'xgboost_optimized_model.pkl'
     joblib.dump(xgb_model, f'{folder}/{filename}')
 
@@ -156,7 +211,7 @@ def train_xgboost(dataset, optimization=True):
     return xgb_model  # Retourne le modèle entraîné
 
 
-def test_xgboost(indicators, model_path='models/XGBoost_V1_optimized/xgboost_optimized_model.pkl', encoder_path='models/XGBoost_V1_optimized/label_encoder.pkl'):
+def test_xgboost(indicators, model_path='models/XGBoost_V2_optimized/xgboost_optimized_model.pkl', encoder_path='models/XGBoost_V2_optimized/label_encoder.pkl'):
 
     # Charger le modèle
     model = joblib.load(model_path)

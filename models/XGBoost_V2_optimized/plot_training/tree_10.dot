@@ -1,0 +1,41 @@
+digraph {
+    graph [ rankdir=TB ]
+
+    0 [ label="acceleration_ecart_type<1143.27002" ]
+    0 -> 1 [label="yes" color="#FF0000"]
+    0 -> 2 [label="no, missing" color="#0000FF"]
+
+    1 [ label="acceleration_moyenne<-198.985001" ]
+    1 -> 3 [label="yes" color="#FF0000"]
+    1 -> 4 [label="no, missing" color="#0000FF"]
+
+    3 [ label="distance_totale<181.414993" ]
+    3 -> 7 [label="yes" color="#FF0000"]
+    3 -> 8 [label="no, missing" color="#0000FF"]
+
+    7 [ label="leaf=-0.0952297077" ]
+
+    8 [ label="leaf=0.132643923" ]
+
+    4 [ label="leaf=0.211378127" ]
+
+    2 [ label="entropie_angles<1.09899998" ]
+    2 -> 5 [label="yes" color="#FF0000"]
+    2 -> 6 [label="no, missing" color="#0000FF"]
+
+    5 [ label="ratio_linearite<0.219999999" ]
+    5 -> 9 [label="yes" color="#FF0000"]
+    5 -> 10 [label="no, missing" color="#0000FF"]
+
+    9 [ label="leaf=0.189449832" ]
+
+    10 [ label="leaf=-0.0349601731" ]
+
+    6 [ label="acceleration_ecart_type<2278.27295" ]
+    6 -> 11 [label="yes" color="#FF0000"]
+    6 -> 12 [label="no, missing" color="#0000FF"]
+
+    11 [ label="leaf=-0.0478812382" ]
+
+    12 [ label="leaf=-0.210448653" ]
+}
