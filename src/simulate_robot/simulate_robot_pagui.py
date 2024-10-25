@@ -429,47 +429,50 @@ def main():
     
     
     n = int(150/6)
-    for i in range(n):
-        # Simule un déplacement linéaire vers le bouton
-        pyautogui.moveTo(refresh[0], refresh[1])
-        click_randomly(duration=0.2)
-        simulate_linear_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1], perturbations=False)
-        time.sleep(1)
-    for i in range(n):
-        # Simule un déplacement linéaire vers le bouton avec des perturbations
-        pyautogui.moveTo(refresh[0], refresh[1])
-        click_randomly(duration=0.2)
-        simulate_linear_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1], perturbations=True)
-        time.sleep(1)
-    for i in range(n):
-        # Simule un déplacement random vers le boutons
-        pyautogui.moveTo(refresh[0], refresh[1])
-        click_randomly(duration=0.2)
-        simulate_random_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1], perturbations=False)
-        time.sleep(1)
-    for i in range(n):
-        # Simule un déplacement random vers le bouton avec des perturbations
-        pyautogui.moveTo(refresh[0], refresh[1])
-        click_randomly(duration=0.2)
-        simulate_random_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1], perturbations=True)
-        time.sleep(1)
+    # for i in range(n):
+    #     # Simule un déplacement linéaire vers le bouton
+    #     pyautogui.moveTo(refresh[0], refresh[1])
+    #     click_randomly(duration=0.2)
+    #     simulate_linear_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1], perturbations=False)
+    #     time.sleep(1)
+    # for i in range(n):
+    #     # Simule un déplacement linéaire vers le bouton avec des perturbations
+    #     pyautogui.moveTo(refresh[0], refresh[1])
+    #     click_randomly(duration=0.2)
+    #     simulate_linear_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1], perturbations=True)
+    #     time.sleep(1)
+    # for i in range(n):
+    #     # Simule un déplacement random vers le boutons
+    #     pyautogui.moveTo(refresh[0], refresh[1])
+    #     click_randomly(duration=0.2)
+    #     simulate_random_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1], perturbations=False)
+    #     time.sleep(1)
+    # for i in range(n):
+    #     # Simule un déplacement random vers le bouton avec des perturbations
+    #     pyautogui.moveTo(refresh[0], refresh[1])
+    #     click_randomly(duration=0.2)
+    #     simulate_random_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1], perturbations=True)
+    #     time.sleep(1)
 
-    for i in range(n):
-        # Simule un déplacement en suivant une courb de bézier vers le bouton
-        pyautogui.moveTo(refresh[0], refresh[1])
-        click_randomly(duration=0.2)
-        simulate_bezier_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1], perturbations=False)
-        time.sleep(1)
-    for i in range(n):
-        # Simule un déplacement en suivant une courb de bézier vers le bouton avec des perturbations
-        pyautogui.moveTo(refresh[0], refresh[1])
-        click_randomly(duration=0.2)
-        simulate_bezier_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1], perturbations=True)
-        time.sleep(1)
+    # for i in range(n):
+    #     # Simule un déplacement en suivant une courb de bézier vers le bouton
+    #     pyautogui.moveTo(refresh[0], refresh[1])
+    #     click_randomly(duration=0.2)
+    #     simulate_bezier_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1], perturbations=False)
+    #     time.sleep(1)
+    # for i in range(n):
+    #     # Simule un déplacement en suivant une courb de bézier vers le bouton avec des perturbations
+    #     pyautogui.moveTo(refresh[0], refresh[1])
+    #     click_randomly(duration=0.2)
+    #     simulate_bezier_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1], perturbations=True)
+    #     time.sleep(1)
         
         
-            
-        
+    pyautogui.moveTo(refresh[0], refresh[1])
+    click_randomly(duration=0.2)
+    #simulate_bezier_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1], perturbations=False)
+    #simulate_random_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1], perturbations=False)
+    simulate_linear_click_pyautogui(bouton[0], bouton[1], taille_ecran[0], taille_ecran[1], perturbations=True)   
 
 if __name__ == "__main__":
     main()

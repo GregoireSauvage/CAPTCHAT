@@ -3,10 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>Suivi du mouvement de la souris</title>
+    <style>
+        /* Styles pour le tableau */
+        table {
+            width: 60%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        #stopButton {
+            margin: 0px 0;
+        }
+    </style>
 </head>
 <body>
     <!-- Bouton pour arrêter l'enregistrement et envoyer les données -->
     <button id="stopButton">Vérifier</button>
+
+    <!-- Conteneur pour le tableau des résultats -->
+    <div id="results-container"></div>
 
     <script>
 
@@ -22,8 +44,6 @@
         let mouseMovements = [];
         let clickCoordinates = [];
         const MAX_TIME = 5000; // 5 secondes en millisecondes
-
-        
 
         // Variable pour limiter la fréquence de collecte (throttling)
         let firstRecordedTime = 0;
@@ -85,10 +105,44 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    // Afficher la prédiction à l'écran
-                    const resultDiv = document.createElement('div');
-                    resultDiv.innerHTML = `<h2>Résultat : ${data.prediction}</h2>`;
-                    document.body.appendChild(resultDiv);
+                    // Créer le tableau si ce n'est pas déjà fait
+                    let table = document.getElementById('results-table');
+                    if (!table) {
+                        table = document.createElement('table');
+                        table.id = 'results-table';
+
+                        // Créer l'en-tête du tableau
+                        const header = table.createTHead();
+                        const headerRow = header.insertRow(0);
+                        const cellModel = headerRow.insertCell(0);
+                        const cellPrediction = headerRow.insertCell(1);
+                        const cellLink = headerRow.insertCell(2);
+                        cellModel.innerHTML = "<b>Modèle</b>";
+                        cellPrediction.innerHTML = "<b>Prédiction</b>";
+                        cellLink.innerHTML = "<b>Lien</b>";
+
+                        // Ajouter le tableau au conteneur
+                        document.getElementById('results-container').appendChild(table);
+                    }
+
+                    // Ajouter les prédictions au tableau
+                    const tbody = table.getElementsByTagName('tbody')[0] || table.createTBody();
+
+                    data.predictions.forEach(predictionData => {
+                        const row = tbody.insertRow();
+                        const cellModel = row.insertCell(0);
+                        const cellPrediction = row.insertCell(1);
+                        const cellLink = row.insertCell(2);
+                    
+                        cellModel.innerText = predictionData.model;
+                        cellPrediction.innerText = predictionData.prediction;
+                    
+                        // Créer le lien vers la page explicative du modèle
+                        const link = document.createElement('a');
+                        link.href = predictionData.link;
+                        link.innerText = 'En savoir plus';
+                        cellLink.appendChild(link);
+                    });
                 } else {
                     alert('Erreur lors de l\'analyse des données : ' + data.message);
                 }
@@ -98,7 +152,7 @@
             });
         }
 
-        // Écouteur pour le bouton "Arrêter et envoyer les données"
+        // Écouteur pour le bouton "Vérifier"
         document.getElementById('stopButton').addEventListener('click', function() {
             // Supprimer les écouteurs d'événements pour arrêter l'enregistrement
             document.removeEventListener('mousemove', mouseMoveHandler);

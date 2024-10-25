@@ -138,14 +138,35 @@ def predict():
         return jsonify({'status': 'error', 'message': 'Impossible d\'extraire les indicateurs'}), 400
 
     # Charger le modèle et faire une prédiction
-    #prediction = predict_random_forest(indicators)
-    #prediction = predict_xgboost(indicators)
-    prediction = predict_svm_rbf(indicators)
+    predictions = [
+        {'model': 'Random Forest V1', 'prediction': predict_random_forest(indicators, 'models/RF_V1/random_forestV1.pkl'), 'link': '/Randomforest#V1'},
+        {'model': 'Random Forest V2', 'prediction': predict_random_forest(indicators, 'models/RF_V2/random_forestV2.pkl'), 'link': '/Randomforest#V2'},
+        {'model': 'Random Forest V2 optimisé', 'prediction': predict_random_forest(indicators, 'models/RF_V2_optimized/random_forestV2_optimized.pkl'), 'link': '/Randomforest#V2_optimized'},
+        {'model': 'XGBoost V1', 'prediction': predict_xgboost(indicators, 'models/XGBoost_V1/xgboost_model.pkl', 'models/XGBoost_V1/label_encoder.pkl'), 'link': '/XGBoost#V1'},
+        {'model': 'XGBoost V1 optimisé', 'prediction': predict_xgboost(indicators, 'models/XGBoost_V1_optimized/xgboost_optimized_model.pkl', 'models/XGBoost_V1_optimized/label_encoder.pkl'), 'link': '/XGBoost#V1_optimized'},
+        {'model': 'XGBoost V2 optimisé', 'prediction': predict_xgboost(indicators, 'models/XGBoost_V2_optimized/xgboost_optimized_model.pkl', 'models/XGBoost_V2_optimized/label_encoder.pkl'), 'link': '/XGBoost#V2_optimized'},
+        {'model': 'SVM RBF', 'prediction': predict_svm_rbf(indicators, 'models/SVM_RBF'), 'link': '/SVMRBF#V1'},
+    ]
     
+
     # Renvoyer la prédiction au client (robot ou humain)
-    return jsonify({'status': 'success', 'prediction': prediction}), 200
+    return jsonify({'status': 'success', 'predictions': predictions}), 200
+
+
+@app.route('/Randomforest')
+def randomforest_v1():
+    return render_template('randomforest.html')
+
+@app.route('/XGBoost')
+def xgboost_v1():
+    return render_template('xgboost.html')
+
+@app.route('/SVMRBF')
+def svmrbf_v1():
+    return render_template('svmrbf.html')        
 
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
