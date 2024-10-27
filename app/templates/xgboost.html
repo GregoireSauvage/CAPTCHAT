@@ -41,7 +41,29 @@
     <!-- Section pour la Version 1 -->
     <section id="V1">
         <h2>Version 1</h2>
-        <p>Voici des explications détaillées sur le modèle XGBoost Version 1.</p>
+        <h3>Ce modèle a été entrainé uniquement avec des features/indicateurs extraits des la position de la souris (x, y, temps) lors du mouvement pour cliquer sur le bouton.</h3>
+        <h3>Features utilisées (16): </h3>
+        <ul>
+            <li>vitesse_moyenne</li>
+            <li>vitesse_min</li>
+            <li>vitesse_max</li>
+            <li>vitesse_ecart_type</li>
+            <li>vitesse_coefficient_variation</li>
+            <li>vitesse_range_ratio</li>
+            <li>acceleration_moyenne</li>
+            <li>acceleration_min</li>
+            <li>acceleration_max</li>
+            <li>acceleration_ecart_type</li>
+            <li>distance_totale</li>
+            <li>distance_ligne_droite</li>
+            <li>ratio_linearite</li>
+            <li>nombre_changements_direction</li>
+            <li>variance_angles</li>
+            <li>entropie_angles</li>
+        </ul>
+        <p> Le dataset d'entrainement contient 550 exemples positifs et 550 exemples négatifs, dont 80% pour l'entrainement et 20% pour le test.
+        </br> Les données "robot" ont été générées via plusieurs scripts python qui simulent un mouvement de souris (mouvement linéaire, aléatoire, zigzag, bézier, spline cubique, etc.).
+        </p>
         <img src="{{ url_for('static', filename='XGBoost_V1/matrice_confusion.png') }}" alt="Matrice de confusion du modèle XGBoost V1">
         <img src="{{ url_for('static', filename='XGBoost_V1/courbe_ROC.png') }}" alt="Courbe ROC/AUC du modèle XGBoost V1">
         <img src="{{ url_for('static', filename='XGBoost_V1/caracteristiques.png') }}" alt="Liste des caractéristiques importantes du modèle XGBoost V2">
@@ -50,7 +72,29 @@
     <!-- Section pour la Version 2 -->
     <section id="V1_optimized">
         <h2>Version 1 optimisée</h2>
-        <p>Voici des explications détaillées sur le modèle XGBoost Version 2.</p>
+        <h3>Ce modèle a été entrainé uniquement avec des features/indicateurs extraits des la position de la souris (x, y, temps) lors du mouvement pour cliquer sur le bouton.</h3>
+        <h3>Features utilisées (16): </h3>
+        <ul>
+            <li>vitesse_moyenne</li>
+            <li>vitesse_min</li>
+            <li>vitesse_max</li>
+            <li>vitesse_ecart_type</li>
+            <li>vitesse_coefficient_variation</li>
+            <li>vitesse_range_ratio</li>
+            <li>acceleration_moyenne</li>
+            <li>acceleration_min</li>
+            <li>acceleration_max</li>
+            <li>acceleration_ecart_type</li>
+            <li>distance_totale</li>
+            <li>distance_ligne_droite</li>
+            <li>ratio_linearite</li>
+            <li>nombre_changements_direction</li>
+            <li>variance_angles</li>
+            <li>entropie_angles</li>
+        </ul>
+        <p> Le dataset d'entrainement contient 550 exemples positifs et 550 exemples négatifs, dont 80% pour l'entrainement et 20% pour le test.
+        </br> Les données "robot" ont été générées via plusieurs scripts python qui simulent un mouvement de souris (mouvement linéaire, aléatoire, zigzag, bézier, spline cubique, etc.).
+        </p>
         <img src="{{ url_for('static', filename='XGBoost_V1_optimized/matrice_confusion.png') }}" alt="Matrice de confusion du modèle XGBoost V2">
         <img src="{{ url_for('static', filename='XGBoost_V1_optimized/courbe_ROC.png') }}" alt="Courbe ROC/AUC du modèle XGBoost V2">
         <img src="{{ url_for('static', filename='XGBoost_V1_optimized/caracteristiques.png') }}" alt="Liste des caractéristiques importantes du modèle XGBoost V2">
@@ -59,7 +103,29 @@
     <!-- Section pour la Version 3 -->
     <section id="V2_optimized">
         <h2>Version 2 optimisée</h2>
-        <p>Voici des explications détaillées sur le modèle XGBoost Version 2 optimisée.
+        <h3>Ce modèle a été entrainé uniquement avec des features/indicateurs extraits des la position de la souris (x, y, temps) lors du mouvement pour cliquer sur le bouton.</h3>
+        <h3>Features utilisées (16): </h3>
+        <ul>
+            <li>vitesse_moyenne</li>
+            <li>vitesse_min</li>
+            <li>vitesse_max</li>
+            <li>vitesse_ecart_type</li>
+            <li>vitesse_coefficient_variation</li>
+            <li>vitesse_range_ratio</li>
+            <li>acceleration_moyenne</li>
+            <li>acceleration_min</li>
+            <li>acceleration_max</li>
+            <li>acceleration_ecart_type</li>
+            <li>distance_totale</li>
+            <li>distance_ligne_droite</li>
+            <li>ratio_linearite</li>
+            <li>nombre_changements_direction</li>
+            <li>variance_angles</li>
+            <li>entropie_angles</li>
+        </ul>
+        <p> Le dataset d'entrainement contient 550 exemples positifs et 550 exemples négatifs, dont 80% pour l'entrainement et 20% pour le test.
+        </br> Les données "robot" ont été générées via plusieurs scripts python qui simulent un mouvement de souris (mouvement linéaire, aléatoire, zigzag, bézier, spline cubique, etc.).
+        </p>
         </br> Cette optimisation s'est faites avec une grid search sur les hyperparamètres du modèle.
         </p>
         <img src="{{ url_for('static', filename='XGBoost_V2_optimized/matrice_confusion.png') }}" alt="Matrice de confusion du modèle XGBoost V2 optimisé">
