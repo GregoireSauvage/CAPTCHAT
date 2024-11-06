@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, url_for
 from src.get_indicators import  extract_indicators, get_indicators
 from src.organize_data import clear_dataset
 from ML.random_forest import random_forest, predict_random_forest
@@ -7,6 +7,17 @@ from ML.SVM import train_svm_rbf, predict_svm_rbf
 import csv
 import os
 import pandas as pd
+import numpy as np
+
+def convert_np_types(obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        elif isinstance(obj, np.floating):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        else:
+            return obj
 
 def extract_data_from_csv():
     filepath = "data/collect_data/data_all.csv"
@@ -63,7 +74,9 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('predict_CAPTCHAT.html')
+    robotUrl = url_for('static', filename='robot.png')
+    humanUrl = url_for('static', filename='human.png')
+    return render_template('predict_CAPTCHAT.html', robot_image=robotUrl, human_image=humanUrl)
 
 @app.route('/collect', methods=['POST'])
 def collect_data():
@@ -132,10 +145,22 @@ def predict():
 
     # Extraire les indicateurs à partir des mouvements de souris
     indicators = extract_indicators(mouse_movements=mouse_movements, show_figure=False)
-
+    # reduis le nombre de chiffres après la virgule
+    indicators = {key: round(value, 2) for key, value in indicators.items()}
+    
     # Vérifier que les indicateurs sont bien extraits
     if indicators is None or len(indicators) == 0:
         return jsonify({'status': 'error', 'message': 'Impossible d\'extraire les indicateurs'}), 400
+
+    # Convertir les indicateurs en un format sérialisable si nécessaire
+    if isinstance(indicators, pd.Series):
+        indicators = indicators.to_dict()
+    elif isinstance(indicators, np.ndarray):
+        indicators = indicators.tolist()
+    
+
+    # Appliquer la conversion à chaque valeur du dictionnaire
+    indicators = {key: convert_np_types(value) for key, value in indicators.items()}
 
     # Charger le modèle et faire une prédiction
     predictions = [
@@ -150,7 +175,7 @@ def predict():
     
 
     # Renvoyer la prédiction au client (robot ou humain)
-    return jsonify({'status': 'success', 'predictions': predictions}), 200
+    return jsonify({'status': 'success', 'predictions': predictions, 'indicators': indicators}), 200
 
 
 @app.route('/Randomforest')

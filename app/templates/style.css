@@ -1,0 +1,38 @@
+/* Styles pour les boutons de bascule */
+#toggle-predictions, #toggle-indicators {
+    background-color: #007BFF;
+    color: white;
+    padding: 8px 12px;
+    margin: 10px 0;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 4px;
+}
+
+#toggle-predictions:hover, #toggle-indicators:hover {
+    background-color: #0056b3;
+}
+
+/* Styles pour les conteneurs des tableaux */
+#predictions-table-container, #indicators-table-container {
+    margin-bottom: 20px;
+}
+
+/* Styles pour le tableau */
+table {
+    width: 60%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+th {
+    background-color: #f2f2f2;
+    text-align: left;
+}
+#stopButton {
+    margin: 0px 0;
+}

@@ -4,15 +4,46 @@
     <meta charset="UTF-8">
     <title>Suivi du mouvement de la souris</title>
     <style>
+        body {
+            background-color: white; /* Couleur de fond par défaut */
+            background-image: none;
+            background-size: auto 100%; /* Ajuste la hauteur de l'image à 100% */
+            background-position: center center; /* Centre l'image */
+            background-repeat: no-repeat; /* Empêche la répétition de l'image */
+            background-attachment: fixed; /* Garde l'image fixe lors du défilement ou de l'interaction */
+        }
+
+        #stopButton, #toggle-predictions, #toggle-indicators {
+            background-color: #007BFF;
+            color: white;
+            padding: 8px 12px;
+            margin: 10px 0;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+        
+        #stopButton:hover, #toggle-predictions:hover, #toggle-indicators:hover {
+            background-color: #0056b3;
+        }
+        
+        /* Styles pour les conteneurs des tableaux */
+        #predictions-table-container, #indicators-table-container {
+            margin-bottom: 20px;
+        }
+        
         /* Styles pour le tableau */
         table {
             width: 60%;
             border-collapse: collapse;
             margin: 20px 0;
+            background-color: white;
         }
         th, td {
             border: 1px solid #ddd;
             padding: 8px;
+            
         }
         th {
             background-color: #f2f2f2;
@@ -21,15 +52,34 @@
         #stopButton {
             margin: 0px 0;
         }
+
     </style>
 </head>
 <body>
     <!-- Bouton pour arrêter l'enregistrement et envoyer les données -->
     <button id="stopButton">Vérifier</button>
 
-    <!-- Conteneur pour le tableau des résultats -->
-    <div id="results-container"></div>
+    <!-- Élément pour afficher le pourcentage de résultat -->
+    <h2 id="result-percentage" style="display: none;"></h2>
 
+    <!-- Conteneur pour le tableau des résultats -->
+    <div id="results-container">
+        <!-- Section pour les prédictions -->
+        <div id="predictions-section">
+            <button id="toggle-predictions" style="display: none;">Voir les prédictions ></button>
+            <div id="predictions-table-container" style="display: none;"></div>
+        </div>
+        
+        <!-- Section pour les indicateurs -->
+        <div id="indicators-section">
+            <button id="toggle-indicators" style="display: none;">Voir les indicateurs ></button>
+            <div id="indicators-table-container" style="display: none;"></div>
+        </div>
+    </div>
+    <script>
+        const robotUrl = "{{ robot_image }}";
+        const humanUrl = "{{ human_image }}";
+    </script>
     <script>
 
         // Fonction pour générer un identifiant de session unique
@@ -84,6 +134,26 @@
         // Attacher les écouteurs d'événements
         document.addEventListener('mousemove', mouseMoveHandler);
         document.addEventListener('click', clickHandler);
+        
+        // Fonction pour basculer la visibilité d'un élément
+        function toggleVisibility(buttonId, containerId) {
+            const button = document.getElementById(buttonId);
+            const container = document.getElementById(containerId);
+
+            button.addEventListener('click', function() {
+                if (container.style.display === 'none') {
+                    container.style.display = 'block';
+                    button.innerText = button.innerText.replace('Voir', 'Masquer').replace('>', '<');
+                } else {
+                    container.style.display = 'none';
+                    button.innerText = button.innerText.replace('Masquer', 'Voir').replace('<', '>');
+                }
+            });
+        }
+
+        // Ajouter les écouteurs pour les boutons
+        toggleVisibility('toggle-predictions', 'predictions-table-container');
+        toggleVisibility('toggle-indicators', 'indicators-table-container');
 
         // Fonction pour envoyer les données au serveur Flask
         function sendData() {
@@ -105,44 +175,131 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    // Créer le tableau si ce n'est pas déjà fait
-                    let table = document.getElementById('results-table');
-                    if (!table) {
-                        table = document.createElement('table');
-                        table.id = 'results-table';
+                    let human = 0;
+                    let robot = 0;
+                    let pourcentageResult = 0
+                    if (data.predictions && data.predictions.length > 0) {
+                        // Afficher le bouton des prédictions
+                        document.getElementById('toggle-predictions').style.display = 'inline-block';
+            
+                        // Créer le tableau des prédictions si ce n'est pas déjà fait
+                        let table = document.getElementById('results-table');
+                        if (!table) {
+                            table = document.createElement('table');
+                            table.id = 'results-table';
+            
+                            // Créer l'en-tête du tableau
+                            const header = table.createTHead();
+                            const headerRow = header.insertRow(0);
+                            const cellModel = headerRow.insertCell(0);
+                            const cellPrediction = headerRow.insertCell(1);
+                            const cellLink = headerRow.insertCell(2);
+                            cellModel.innerHTML = "<b>Modèle</b>";
+                            cellPrediction.innerHTML = "<b>Prédiction</b>";
+                            cellLink.innerHTML = "<b>Lien</b>";
+            
+                            // Ajouter le tableau au conteneur des prédictions
+                            document.getElementById('predictions-table-container').appendChild(table);
+                        }
+            
+                        // Ajouter les prédictions au tableau
+                        const tbody = table.getElementsByTagName('tbody')[0] || table.createTBody();
 
-                        // Créer l'en-tête du tableau
-                        const header = table.createTHead();
-                        const headerRow = header.insertRow(0);
-                        const cellModel = headerRow.insertCell(0);
-                        const cellPrediction = headerRow.insertCell(1);
-                        const cellLink = headerRow.insertCell(2);
-                        cellModel.innerHTML = "<b>Modèle</b>";
-                        cellPrediction.innerHTML = "<b>Prédiction</b>";
-                        cellLink.innerHTML = "<b>Lien</b>";
+                        
 
-                        // Ajouter le tableau au conteneur
-                        document.getElementById('results-container').appendChild(table);
+                        // Vider le corps du tableau pour éviter les duplicatas
+                        tbody.innerHTML = '';
+            
+                        data.predictions.forEach(predictionData => {
+                            const row = tbody.insertRow();
+                            const cellModel = row.insertCell(0);
+                            const cellPrediction = row.insertCell(1);
+                            const cellLink = row.insertCell(2);
+                        
+                            cellModel.innerText = predictionData.model;
+                            cellPrediction.innerText = predictionData.prediction;
+                            
+                            // parcours les prédictions pour faire la somme des 'human' et des 'robot'
+                            if (predictionData.prediction === 'human') {
+                                human++;
+                            } else if (predictionData.prediction === 'robot') {
+                                robot++;
+                            }
+                            
+
+                            // Créer le lien vers la page explicative du modèle
+                            const link = document.createElement('a');
+                            link.href = predictionData.link;
+                            link.innerText = 'En savoir plus';
+                            cellLink.appendChild(link);
+                        });
+                    } else {
+                        // Cacher le bouton des prédictions s'il n'y a pas de données
+                        document.getElementById('toggle-predictions').style.display = 'none';
                     }
 
-                    // Ajouter les prédictions au tableau
-                    const tbody = table.getElementsByTagName('tbody')[0] || table.createTBody();
+                    // Afficher le résultat
+                    pourcentageResult = (human / (robot + human)) * 100; // calcul du pourcentage de modèle qui prédisent 'human'
+                    if (pourcentageResult > 50) {
+                        document.body.style.backgroundImage = "url('" + humanUrl + "')";
+                    } else {
+                        document.body.style.backgroundImage = "url('" + robotUrl + "')";
+                    }
+                    // Afficher le pourcentage de résultat dans l'élément <h2>
+                    if (!isNaN(pourcentageResult)) {
+                        let resultPercentageElement = document.getElementById('result-percentage');
+                        resultPercentageElement.style.display = 'block'; // Rendre l'élément visible
+                        if (pourcentageResult > 50) {
+                            pourcentage = pourcentageResult.toFixed(2);
+                            resultPercentageElement.innerText = 'Vous êtes : Humain \nConfiance : ' + pourcentage + '%';
+                        } else {
+                            pourcentage = 100 - pourcentageResult.toFixed(2);
+                            resultPercentageElement.innerText = 'Vous êtes : Robot \nConfiance : ' + pourcentage + '%';
+                        }
+                    }
 
-                    data.predictions.forEach(predictionData => {
-                        const row = tbody.insertRow();
-                        const cellModel = row.insertCell(0);
-                        const cellPrediction = row.insertCell(1);
-                        const cellLink = row.insertCell(2);
-                    
-                        cellModel.innerText = predictionData.model;
-                        cellPrediction.innerText = predictionData.prediction;
-                    
-                        // Créer le lien vers la page explicative du modèle
-                        const link = document.createElement('a');
-                        link.href = predictionData.link;
-                        link.innerText = 'En savoir plus';
-                        cellLink.appendChild(link);
-                    });
+                    // Afficher les indicateurs
+                    if (data.indicators && Object.keys(data.indicators).length > 0) {
+                        // Afficher le bouton des indicateurs
+                        document.getElementById('toggle-indicators').style.display = 'inline-block';
+            
+                        // Créer le tableau des indicateurs s'il n'existe pas
+                        let indicatorsTable = document.getElementById('indicators-table');
+                        if (!indicatorsTable) {
+                            indicatorsTable = document.createElement('table');
+                            indicatorsTable.id = 'indicators-table';
+            
+                            // Créer l'en-tête du tableau
+                            const header = indicatorsTable.createTHead();
+                            const headerRow = header.insertRow(0);
+                            const cellIndicator = headerRow.insertCell(0);
+                            const cellValue = headerRow.insertCell(1);
+                            cellIndicator.innerHTML = "<b>Indicateur</b>";
+                            cellValue.innerHTML = "<b>Valeur</b>";
+            
+                            // Ajouter le tableau au conteneur des indicateurs
+                            document.getElementById('indicators-table-container').appendChild(indicatorsTable);
+                        }
+            
+                        // Ajouter les indicateurs au tableau
+                        const tbody = indicatorsTable.getElementsByTagName('tbody')[0] || indicatorsTable.createTBody();
+            
+                        // Vider le corps du tableau pour éviter les duplicatas
+                        tbody.innerHTML = '';
+            
+                        for (const [key, value] of Object.entries(data.indicators)) {
+                            const row = tbody.insertRow();
+                            const cellIndicator = row.insertCell(0);
+                            const cellValue = row.insertCell(1);
+            
+                            cellIndicator.innerText = key;
+                            cellValue.innerText = value;
+                        }
+                    } else {
+                        // Cacher le bouton des indicateurs s'il n'y a pas de données
+                        document.getElementById('toggle-indicators').style.display = 'none';
+                    }
+
                 } else {
                     alert('Erreur lors de l\'analyse des données : ' + data.message);
                 }
