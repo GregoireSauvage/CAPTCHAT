@@ -13,7 +13,6 @@ COPY src ./src
 COPY main.py ./
 COPY ML ./ML
 COPY models ./models
-COPY data ./data
 
 # run the pip install command
 RUN pip install -r requirements.txt
