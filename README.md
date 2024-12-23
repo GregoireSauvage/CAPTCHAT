@@ -8,18 +8,22 @@ CAPTCHAT 🐱 est une application web conçue pour collecter et analyser les mou
 
 ## Fonctionnalités
 
+### Exploitation du modèle de classification (prédiction si Humain ou Robot)
+- Collecte des mouvements de souris et des clics sur une page web.
+- Enregistrement des données dans un fichier CSV pour une analyse ultérieure.
+- Extraction d'indicateurs à partir des données collectées.
+- Prédit si le mouvement a été réalisé par un humain ou un robot via plusieurs modèles (Random Forest, XGBoost, SVM)
+
+![alt text](illustration1.png)
+
+![alt text](illustration2.png)
+
 ### Collecte et entrainement
 - Collecte des mouvements de souris et des clics sur une page web.
 - Enregistrement des données dans un fichier CSV pour une analyse ultérieure.
 - Extraction d'indicateurs à partir des données collectées.
 - Entraînement d'un modèle de machine learning pour classer les mouvements en 'humain' ou 'machine'.
 - Interface web interactive pour démarrer et arrêter la collecte des données.
-
-### Exploitation du modèle de classification (prédiction si Humain ou Robot)
-- Collecte des mouvements de souris et des clics sur une page web.
-- Enregistrement des données dans un fichier CSV pour une analyse ultérieure.
-- Extraction d'indicateurs à partir des données collectées.
-- Prédit si le mouvement a été réalisé par un humain ou un robot via plusieurs modèles (Random Forest, XGBoost, SVM)
 
 
 ## Prérequis
