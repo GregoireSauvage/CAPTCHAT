@@ -2,7 +2,11 @@
 
 ## Description
 
-CAPTCHAT 🐱 est une application web conçue pour collecter et analyser les mouvements de souris des utilisateurs afin de déterminer s'ils sont effectués par un humain ou un robot. Le projet utilise un serveur Flask pour le backend en Python et une page web en HTML et JavaScript pour le frontend. Les données collectées sont utilisées pour extraire des indicateurs pertinents, puis son exploités par des modèles de ML (Random Forest, XGBoost, SVM) constituer un dataset ou faire une prédiction.
+CAPTCHAT 🐱 est petit projet de ML que j'ai créé dans le but de me familiariser avec les modèles de classification les plus connus (Random Forest, XGBoost, SVM).
+L'application web a été sauvagement vibe codée et sert uniquement de support pour le recueil de données, le test en condition "réelle" et comme vitrine pour les résultats des différents modèles.
+</br>
+Le projet en lui-même est conçue pour collecter et analyser les mouvements de souris des utilisateurs afin de déterminer s'ils sont effectués par un humain ou un robot.
+
 </br></br>Ce projet est très largement inspiré de reCAPTCHA de Google.
 
 
